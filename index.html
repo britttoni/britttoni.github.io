@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS 499 ePortfolio</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --border: #e5e7eb;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white;
+      padding: 56px 20px 42px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: 2.3rem;
+    }
+
+    header p {
+      max-width: 850px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    nav a:hover {
+      background: #eff6ff;
+      color: var(--accent-dark);
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 32px auto 60px;
+    }
+
+    section {
+      margin-bottom: 34px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 1.6rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-grid,
+    .grid,
+    .artifact-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .artifact-grid {
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h2, h3, h4 {
+      margin-top: 0;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--accent);
+      color: white;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .btn.secondary {
+      background: #eef2ff;
+      color: #1f2937;
+    }
+
+    .btn.secondary:hover {
+      background: #e0e7ff;
+    }
+
+    ul.clean {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    ul.clean li { margin-bottom: 8px; }
+
+    .artifact-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .artifact-card .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .artifact-card .links a,
+    .small-link {
+      text-decoration: none;
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 26px 18px 40px;
+    }
+
+    @media (max-width: 800px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>[Your Name] | CS 499 ePortfolio</h1>
+    <p>
+      Welcome to my Computer Science capstone portfolio. This site highlights my code review,
+      artifact enhancements, narratives, and professional self-assessment. My main artifact is an Android
+      inventory application that demonstrates software design and engineering, algorithms and data structures,
+      and databases.
+    </p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#code-review">Code Review</a></li>
+      <li><a href="#artifacts">Artifacts</a></li>
+      <li><a href="#narratives">Narratives</a></li>
+      <li><a href="#course-outcomes">Course Outcomes</a></li>
+      <li><a href="#documents">Documents</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section id="about">
+      <div class="hero-grid">
+        <div class="card">
+          <span class="badge">Professional Summary</span>
+          <h2 class="section-title">About This Portfolio</h2>
+          <p>
+            This portfolio was created for CS 499 to show my growth throughout the Computer Science program.
+            It includes my professional self-assessment, code review, category artifacts, enhancement narratives,
+            and supporting project files.
+          </p>
+          <p>
+            My featured artifact is an Android inventory management app that I enhanced in three areas:
+            software design and engineering, algorithms and data structures, and databases.
+          </p>
+          <div class="button-row">
+            <a class="btn" href="#artifacts">View Artifacts</a>
+            <a class="btn secondary" href="#documents">View Documents</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="badge">Quick Links</span>
+          <h3>What to Include</h3>
+          <ul class="clean">
+            <li>Professional self-assessment</li>
+            <li>Code review video link</li>
+            <li>Software design artifact and narrative</li>
+            <li>Algorithms/data structures artifact and narrative</li>
+            <li>Database artifact and narrative</li>
+            <li>Links to GitHub repository files</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="code-review">
+      <div class="card">
+        <span class="badge">Required Item</span>
+        <h2 class="section-title">Code Review</h2>
+        <p>
+          This section should link to your recorded code review video. Since video files are usually too large
+          to store directly in GitHub Pages, host the video on YouTube, Google Drive, or another platform.
+        </p>
+        <div class="button-row">
+          <a class="btn" href="YOUR_CODE_REVIEW_LINK_HERE" target="_blank">Watch Code Review</a>
+          <a class="btn secondary" href="YOUR_CODE_REVIEW_SCRIPT_LINK_HERE" target="_blank">Code Review Script / Notes</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="artifacts">
+      <h2 class="section-title">Artifact Enhancements</h2>
+      <div class="artifact-grid">
+        <div class="card artifact-card">
+          <span class="badge">Category 1</span>
+          <h3>Software Design and Engineering</h3>
+          <p>
+            Enhancement focused on improving structure, readability, validation, and maintainability in the Android inventory app.
+          </p>
+          <ul class="clean">
+            <li>Improved input validation</li>
+            <li>Cleaner organization of logic</li>
+            <li>Reduced hardcoded values</li>
+            <li>Better comments and readability</li>
+          </ul>
+          <div class="links">
+            <a href="YOUR_SOFTWARE_NARRATIVE_LINK_HERE" target="_blank">Narrative</a>
+            <a href="YOUR_SOFTWARE_CODE_LINK_HERE" target="_blank">Code</a>
+            <a href="YOUR_SOFTWARE_SCREENSHOT_LINK_HERE" target="_blank">Screenshot</a>
+          </div>
+        </div>
+
+        <div class="card artifact-card">
+          <span class="badge">Category 2</span>
+          <h3>Algorithms and Data Structures</h3>
+          <p>
+            Enhancement focused on sorting, searching, filtering, and better use of data structures in the inventory app.
+          </p>
+          <ul class="clean">
+            <li>Search functionality</li>
+            <li>Sorting by item name and quantity</li>
+            <li>ArrayList and HashMap usage</li>
+            <li>Cleaner data handling</li>
+          </ul>
+          <div class="links">
+            <a href="YOUR_ALGORITHMS_NARRATIVE_LINK_HERE" target="_blank">Narrative</a>
+            <a href="YOUR_ALGORITHMS_CODE_LINK_HERE" target="_blank">Code</a>
+            <a href="YOUR_ALGORITHMS_SCREENSHOT_LINK_HERE" target="_blank">Screenshot</a>
+          </div>
+        </div>
+
+        <div class="card artifact-card">
+          <span class="badge">Category 3</span>
+          <h3>Databases</h3>
+          <p>
+            Enhancement focused on improving the SQLite database through CRUD operations, update support, and stronger database design.
+          </p>
+          <ul class="clean">
+            <li>Full CRUD support</li>
+            <li>Update feature in the UI</li>
+            <li>Improved validation</li>
+            <li>Better database functionality</li>
+          </ul>
+          <div class="links">
+            <a href="YOUR_DATABASE_NARRATIVE_LINK_HERE" target="_blank">Narrative</a>
+            <a href="YOUR_DATABASE_CODE_LINK_HERE" target="_blank">Code</a>
+            <a href="YOUR_DATABASE_SCREENSHOT_LINK_HERE" target="_blank">Screenshot</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="narratives">
+      <div class="grid">
+        <div class="card">
+          <span class="badge">Writing</span>
+          <h3>Professional Self-Assessment</h3>
+          <p class="muted">Add your final self-assessment here or link to it as a PDF or page.</p>
+          <a class="small-link" href="YOUR_SELF_ASSESSMENT_LINK_HERE" target="_blank">View Self-Assessment</a>
+        </div>
+
+        <div class="card">
+          <span class="badge">Writing</span>
+          <h3>Enhancement Narratives</h3>
+          <p class="muted">Include all three narratives or link to each one separately.</p>
+          <a class="small-link" href="YOUR_NARRATIVES_FOLDER_OR_PAGE_LINK_HERE" target="_blank">View Narratives</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="course-outcomes">
+      <div class="card">
+        <span class="badge">Program Alignment</span>
+        <h2 class="section-title">Course Outcomes</h2>
+        <div class="checklist">
+          <div>
+            <h4>Collaborative Environments</h4>
+            <p class="muted">Explain how your work supports decision making and communication with different audiences.</p>
+          </div>
+          <div>
+            <h4>Professional Communication</h4>
+            <p class="muted">Show oral, written, and visual communication through your video, narratives, and portfolio design.</p>
+          </div>
+          <div>
+            <h4>Algorithms and Trade-Offs</h4>
+            <p class="muted">Show how your artifact uses algorithmic principles, data structures, and design decisions.</p>
+          </div>
+          <div>
+            <h4>Tools and Techniques</h4>
+            <p class="muted">Show your use of software development, databases, mobile app tools, and programming practices.</p>
+          </div>
+          <div>
+            <h4>Security Mindset</h4>
+            <p class="muted">Describe how you identified vulnerabilities and improved privacy, validation, or data protection.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="documents">
+      <div class="card">
+        <span class="badge">Supporting Files</span>
+        <h2 class="section-title">Documents and Links</h2>
+        <div class="grid">
+          <div>
+            <h4>Repository</h4>
+            <p><a class="small-link" href="YOUR_GITHUB_REPOSITORY_LINK_HERE" target="_blank">Open GitHub Repository</a></p>
+          </div>
+          <div>
+            <h4>Resume</h4>
+            <p><a class="small-link" href="YOUR_RESUME_LINK_HERE" target="_blank">View Resume</a></p>
+          </div>
+          <div>
+            <h4>Journals / Milestones</h4>
+            <p><a class="small-link" href="YOUR_JOURNALS_LINK_HERE" target="_blank">View Supporting Course Work</a></p>
+          </div>
+          <div>
+            <h4>App Screenshots</h4>
+            <p><a class="small-link" href="YOUR_SCREENSHOTS_LINK_HERE" target="_blank">View Screenshots</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="card">
+        <span class="badge">Contact</span>
+        <h2 class="section-title">Contact Information</h2>
+        <p><strong>Name:</strong> [Your Name]</p>
+        <p><strong>Email:</strong> [Your Email]</p>
+        <p><strong>GitHub:</strong> <a class="small-link" href="YOUR_GITHUB_PROFILE_LINK_HERE" target="_blank">GitHub Profile</a></p>
+        <p><strong>LinkedIn:</strong> <a class="small-link" href="YOUR_LINKEDIN_LINK_HERE" target="_blank">LinkedIn Profile</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>CS 499 ePortfolio | [Your Name]</p>
+  </footer>
+</body>
+</html>
