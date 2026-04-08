@@ -204,7 +204,6 @@
       gap: 18px;
     }
 
-    /* IMAGE GALLERY */
     .image-gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -231,6 +230,12 @@
       border: 1px solid var(--border);
       background: white;
       padding: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .image-card img:hover {
+      transform: scale(1.05);
     }
 
     .image-card p {
@@ -243,6 +248,39 @@
       text-align: center;
       color: var(--muted);
       padding: 26px 18px 40px;
+    }
+
+    /* IMAGE MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      display: block;
+      margin: auto;
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 10px;
+      background: white;
+      padding: 8px;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     @media (max-width: 800px) {
@@ -350,15 +388,15 @@
 
           <div class="image-gallery">
             <div class="image-card">
-              <img src="software1.png" alt="Software design screenshot 1">
+              <img src="software1.png" alt="Software design screenshot 1" class="clickable">
               <p>Input validation added to prevent bad user input.</p>
             </div>
             <div class="image-card">
-              <img src="software2.png" alt="Software design screenshot 2">
+              <img src="software2.png" alt="Software design screenshot 2" class="clickable">
               <p>Cleaner method structure in the main activity.</p>
             </div>
             <div class="image-card">
-              <img src="software3.png" alt="Software design screenshot 3">
+              <img src="software3.png" alt="Software design screenshot 3" class="clickable">
               <p>Improved readability with better organization and comments.</p>
             </div>
           </div>
@@ -385,15 +423,15 @@
 
           <div class="image-gallery">
             <div class="image-card">
-              <img src="algorithms1.png" alt="Algorithms screenshot 1">
+              <img src="algorithms1.png" alt="Algorithms screenshot 1" class="clickable">
               <p>Search feature used to filter items by name.</p>
             </div>
             <div class="image-card">
-              <img src="algorithms2.png" alt="Algorithms screenshot 2">
+              <img src="algorithms2.png" alt="Algorithms screenshot 2" class="clickable">
               <p>Sorting logic used to organize inventory items.</p>
             </div>
             <div class="image-card">
-              <img src="algorithms3.png" alt="Algorithms screenshot 3">
+              <img src="algorithms3.png" alt="Algorithms screenshot 3" class="clickable">
               <p>Improved data handling with lists and supporting logic.</p>
             </div>
           </div>
@@ -420,15 +458,15 @@
 
           <div class="image-gallery">
             <div class="image-card">
-              <img src="database1.png" alt="Database screenshot 1">
+              <img src="database1.png" alt="Database screenshot 1" class="clickable">
               <p>Database table structure for storing inventory data.</p>
             </div>
             <div class="image-card">
-              <img src="database2.png" alt="Database screenshot 2">
+              <img src="database2.png" alt="Database screenshot 2" class="clickable">
               <p>Code showing item insert and retrieval logic.</p>
             </div>
             <div class="image-card">
-              <img src="database3.png" alt="Database screenshot 3">
+              <img src="database3.png" alt="Database screenshot 3" class="clickable">
               <p>Update support added to complete CRUD functionality.</p>
             </div>
           </div>
@@ -506,5 +544,34 @@
   <footer>
     <p>CS 499 ePortfolio | Toni Britt</p>
   </footer>
+
+  <!-- IMAGE MODAL -->
+  <div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage" alt="Expanded screenshot">
+  </div>
+
+  <script>
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImage");
+    const closeBtn = document.querySelector(".close");
+
+    document.querySelectorAll(".clickable").forEach(img => {
+      img.addEventListener("click", function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+      });
+    });
+
+    closeBtn.onclick = function () {
+      modal.style.display = "none";
+    };
+
+    modal.onclick = function (e) {
+      if (e.target !== modalImg) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
 </body>
 </html>
