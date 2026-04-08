@@ -17,17 +17,20 @@
   --shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial;
   background: var(--bg);
+  color: var(--text);
 }
 
 header {
   background: linear-gradient(135deg, #1d4ed8, #2563eb);
   color: white;
+  padding: 50px;
   text-align: center;
-  padding: 50px 20px;
 }
 
 nav ul {
@@ -57,25 +60,13 @@ nav a {
   border-radius: 12px;
 }
 
-.artifact-grid {
-  display: flex;
-  flex-direction: column;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
-.image-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.image-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: contain;
-  cursor: pointer;
-}
-
+/* ✅ FIXED NARRATIVE CSS */
 .narrative-links {
   display: flex;
   flex-direction: column;
@@ -93,29 +84,10 @@ nav a {
   text-align: center;
 }
 
-/* MODAL */
-.modal {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
+.narrative-links a:hover {
+  background: #dbeafe;
 }
 
-.modal img {
-  max-width: 80%;
-  margin: 5% auto;
-  display: block;
-}
-
-.close {
-  position: absolute;
-  right: 20px;
-  top: 10px;
-  color: white;
-  font-size: 30px;
-  cursor: pointer;
-}
 </style>
 </head>
 
@@ -127,114 +99,52 @@ nav a {
 
 <nav>
 <ul>
-<li><a href="#artifacts">Artifacts</a></li>
 <li><a href="#narratives">Narratives</a></li>
-<li><a href="#contact">Contact</a></li>
 </ul>
 </nav>
 
 <div class="container">
 
-<!-- ARTIFACTS -->
-<section id="artifacts">
-<h2>Artifacts</h2>
-
-<div class="artifact-grid">
-
-<div class="card">
-<h3>Category 1</h3>
-<div class="image-gallery">
-<img src="software1.png" class="clickable">
-<img src="software2.png" class="clickable">
-<img src="software3.png" class="clickable">
-</div>
-</div>
-
-<div class="card">
-<h3>Category 2</h3>
-<div class="image-gallery">
-<img src="algorithms1.png" class="clickable">
-<img src="algorithms2.png" class="clickable">
-<img src="algorithms3.png" class="clickable">
-</div>
-</div>
-
-<div class="card">
-<h3>Category 3</h3>
-<div class="image-gallery">
-<img src="database1.png" class="clickable">
-<img src="database2.png" class="clickable">
-<img src="database3.png" class="clickable">
-</div>
-</div>
-
-</div>
-</section>
-
-<!-- NARRATIVES -->
+<!-- ✅ FIXED NARRATIVE SECTION -->
 <section id="narratives">
+  <div class="grid">
 
-<div class="card">
-<h3>Professional Self-Assessment</h3>
-<a href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
-View Self-Assessment
-</a>
-</div>
+    <!-- SELF ASSESSMENT -->
+    <div class="card">
+      <h3>Professional Self-Assessment</h3>
+      <p>
+        This section introduces my portfolio and reflects on the skills I developed throughout the Computer Science program.
+      </p>
+      <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
+        View Self-Assessment
+      </a>
+    </div>
 
-<div class="card">
-<h3>Enhancement Narratives</h3>
+    <!-- ENHANCEMENT NARRATIVES -->
+    <div class="card">
+      <h3>Enhancement Narratives</h3>
+      <p>
+        These narratives explain how I improved each category artifact and what I learned from the process.
+      </p>
 
-<div class="narrative-links">
-<a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
-Category 1 Narrative
-</a>
-<a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
-Category 2 Narrative
-</a>
-<a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
-Category 3 Narrative
-</a>
-</div>
+      <div class="narrative-links">
+        <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
+          Category 1 Narrative
+        </a>
+        <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
+          Category 2 Narrative
+        </a>
+        <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
+          Category 3 Narrative
+        </a>
+      </div>
 
-</div>
+    </div>
 
+  </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-<div class="card">
-<h3>Contact</h3>
-<p>Email: toni.britt@snhu.edu</p>
 </div>
-</section>
-
-</div>
-
-<!-- MODAL -->
-<div id="modal" class="modal">
-<span class="close">&times;</span>
-<img id="modalImg">
-</div>
-
-<script>
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-
-document.querySelectorAll(".clickable").forEach(img => {
-  img.onclick = () => {
-    modal.style.display = "block";
-    modalImg.src = img.src;
-  }
-});
-
-document.querySelector(".close").onclick = () => {
-  modal.style.display = "none";
-};
-
-modal.onclick = () => {
-  modal.style.display = "none";
-};
-</script>
 
 </body>
 </html>
