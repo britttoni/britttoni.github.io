@@ -530,69 +530,98 @@ My ePortfolio brings all these skills together and demonstrates my overall growt
 
 
     <div class="card">
-      <span class="badge">Category 1</span>
-      <h4>Software Design and Engineering</h4>
-      <p class="muted">
-        This narrative explains how I improved code structure, validation, and readability in my app.
-      </p>
-      <p>1.	Briefly describe the artifact. What is it? When was it created?
-The artifact I chose for this milestone is my Android inventory app that I created earlier in the CS 360. The app lets users create an account, login, and manage inventory items by adding or deleting them. It also uses SQLite database to store data and has SMS for notifications. 
-2.	Justify the inclusion of the artifact in your ePortfolio. Why did you select this item? What specific components of the artifact showcase your skills and abilities in software development? How was the artifact improved?
-I chose this project because it shows a lot of different skills all in one place. It’s not just one small piece of code but a full app that has user interactions, database use and multiple classes working together. I also picked it because I knew there were areas I could improve. The app worked but wasn’t very clean or organized in some places. Some parts of the app that really show my skills are the login system, the inventory list using RecyclerView and how the app connects to the database using the DBHelper class. 
-For this milestone, I focused on improving the overall structure and design of the app. One of the biggest changes I made was cleaning up how the code is organized. For example, MainActivity java file had a lot going on as it handled user input, database calls and SMS features all in one place. I improve this by breaking things into smaller helper classes and methods. This makes the code easier to read and easier to update later. 
-I also improved input validation. In the original version, the app would try to turn user input into a number without checking if it was valid. That could cause the app to crash. I fixed that by adding checks to make sure the input is correct before using it. Another improvement was removing hardcoded values, like the phone number used for SMS. Instead of having it directly in the code, I changed it so it can be stored and updated more easily. This makes the app more flexible and more realistic. I also made the code easier to understand by organizing it better and adding comments where needed. 
-3.	Did you meet the course outcomes you planned to meet with this enhancement in Module One? Do you have any updates to your outcome-coverage plans?
-I think the improvements I made match the course outcomes I planned in Module One. I was able to take an existing project, look at what was working well, and improve it using better software design practice. This project shows that I can go beyond writing code that works and actually focus on making code cleaner and more efficient. I also showed that I can improve structure, reduce complexity, and handle user input more safely. At this point, I don’t think I need to change my original plan to much. I just need to keep building on these improvements and explain them 
+  <span class="badge">Category 1</span>
+  <h4>Software Design and Engineering</h4>
 
-4.	Reflect on the process of enhancing and modifying the artifact. What did you learn as you were creating it and improving it? What challenges did you face?
-Working on this enhancement helped me better understand the importance of writing clean, maintainable code. One of the biggest things I learned is that just because code works does not mean it is well designed. The original version of my application was functional, but it was not as organized as it could be. One challenge I faced was figuring out how to break apart larger sections of code into smaller, more manageable pieces without breaking the functionality of the app. It took some trial and error to make sure everything still worked correctly after refactoring. Another challenge was improving input validation in a way that was effective and user friendly. I had to think about different types of invalid input and how the application should respond to them. 
+  <p class="muted">Focus: Code structure, validation, and readability</p>
 
-</p>
-      <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
-        Download Narrative
-      </a>
-    </div>
+  <h5>1. Artifact Description</h5>
+  <p>
+    The artifact I chose for this milestone is my Android inventory app that I created earlier in CS 360. The app lets users create an account, login, and manage inventory items while storing data using SQLite and sending SMS notifications.
+  </p>
+
+  <h5>2. Why I Chose This Artifact</h5>
+  <p>
+    I chose this project because it shows multiple skills working together, including user interaction, database use, and app design. I improved the structure by breaking large sections of code into smaller methods and improving organization.
+  </p>
+
+  <h5>3. Course Outcomes</h5>
+  <p>
+    These improvements align with my original plan by showing better software design practices, cleaner code, and improved validation.
+  </p>
+
+  <h5>4. Reflection</h5>
+  <p>
+    I learned that working code is not always well-designed code. One challenge was refactoring without breaking functionality and improving validation in a user-friendly way.
+  </p>
+
+  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
+    Download Full Narrative
+  </a>
+</div>
 
   
-    <div class="card">
-      <span class="badge">Category 2</span>
-      <h4>Algorithms and Data Structures</h4>
-      <p class="muted">
-        This narrative explains how I improved data handling, organization, and efficiency using data structures and algorithms.
-      </p>
-      <p> 
-        1.	Briefly describe the artifact. What is it? When was it created?
-The artifact I used for this category is my Android inventory management app that I created earlier in the CS program. The app allows users to login, add and delete inventory items and store data using SQLite database. I originally built this app in a previous course where the goal was to create a functional mobile app that connects a user with store data.
-I chose this artifact because it already had a basic data structure in place using an ArrayList to store inventory items, which made it a good starting point for improvement. Even though the app worked, the way it handled data was pretty simple and not very efficient. This project gave me the opportunity to show my skills in algorithms and data structures by improving how data is stored, searched and sorted. One min improvements I made was adding sorting and filtering functionality. I created methods to sort items by name and by quantity, which shows my understanding of using organizing data efficiently. I also added a search feature that filters items based on user input, which demonstrates how to work with lists and through data. Another improvement was adding a HashMap to store items by their ID for faster lookup. This shows my understanding of choosing the right data structure depending on the situation. I also implemented a binary search method for finding items by name, which helped me demonstrate a more advanced algorithm compared to simple looping. 
-I believe I met the course outcomes I planned for this category. I was able to demonstrate my understanding of data structures like ArrayList and HashMap, and I applied algorithms like sorting, filtering, and binary search. These changes show that I can not only use data structures, but also improve how data is processed and accessed. I also showed that I can analyze an existing project and make meaningful improvements to it. A this point, I don’t think I need to make major changes to my outcome plan. I may continue improving how I explain these enhancements in my final ePortfolio, but overall I feel like I am on track. 
-Working on this part of the project helped me understand the importance of choosing the right data structure and algorithm for the task. Before this, I mostly using simple lists without thinking much about efficiency or performance. One thing I learned is that even small improvements, like sorting or filtering, can make a big difference in how an app feels and works. I also learned how to organize code better by creating helper classes, like Inventory Utils, instead of putting everything in one file. One challenge I faced was making sure everything still worked correctly after adding new logic. For example, after adding sorting and filtering, I had to make sure the RecycleView updated properly and didn’t break the existing functionality. It took some trial and error to get everything working together.
-</p>
-      <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
-        View Full Narrative
-      </a>
-    </div>
+   <div class="card">
+  <span class="badge">Category 2</span>
+  <h4>Algorithms and Data Structures</h4>
+
+  <p class="muted">Focus: Data handling, searching, and sorting</p>
+
+  <h5>1. Artifact Description</h5>
+  <p>
+    This artifact is my Android inventory app that allows users to manage inventory using SQLite and display data through a RecyclerView.
+  </p>
+
+  <h5>2. Enhancements</h5>
+  <p>
+    I improved how data is handled by adding sorting, filtering, and search functionality. I also used ArrayList and HashMap to better organize data and implemented binary search for faster lookup.
+  </p>
+
+  <h5>3. Course Outcomes</h5>
+  <p>
+    These improvements demonstrate my understanding of data structures and algorithms and how they improve performance and efficiency.
+  </p>
+
+  <h5>4. Reflection</h5>
+  <p>
+    I learned how important it is to choose the right data structure. One challenge was making sure the RecyclerView updated correctly after adding new logic.
+  </p>
+
+  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
+    View Full Narrative
+  </a>
+</div>
 
 
-    <div class="card">
-      <span class="badge">Category 3</span>
-      <h4>Databases</h4>
-      <p class="muted">
-        This narrative explains how I improved database structure, CRUD functionality, and security using password hashing.
-      </p>
-      <p>
-        1.	Briefly describe the artifact. What is it? When was it created?
-The artifact I used for category is my Android inventory app that I created in CS 360. The app lets users create an account, login and manage inventory items using a SQLite database. It stores user information and item data and displays the data in a RecyclerView. For this milestone I focused on improving database design, security and overall functionality.
-I chose this artifact because it already had a working database but needed improvement. In the original version, passwords were stored in plain text and the app only supported adding and deleting items. One of the biggest changes I made was adding password hashing instead of storing passwords. This was important because it makes the app more secure. I also added full CRUD functionality by adding an update feature, so users can now edit existing inventory items instead of just deleting or readding them. I also improved how database handles data by adding validation and making sure the results are sorted when displayed. These updates helped make the app more reliable and user friendly. 
-I think I met the course outcomes I planned for the category. I demonstrated that I can work with databases, improve data security, and implement full CRUD operations. I also showed that I can take a previous project and make it better instead of starting from scratch. I don’t think I need to make major changes to my outcome plan. 
-Working on this enhancement helped me realize how important database security is. Before this, I didn’t think much about how passwords were stored but learning about hashing made me understand why this is necessary. I also learned that databases aren’t just about storing data but also how that data is handled, validated, and retrieved. Even small improvements, like adding validation or sorting results, can make a big difference in how the app works. One challenge I ran into was making sure everything was still working after I changed the database code. For example, once I added password hashing, I had to make sure login and registration still worked. I also had to test the update feature to make sure it didn’t break anything. 
+   <div class="card">
+  <span class="badge">Category 3</span>
+  <h4>Databases</h4>
 
-</p>
-      <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
-        Download Narrative
-      </a>
-    </div>
+  <p class="muted">Focus: Database design, CRUD, and security</p>
 
-  </div>
+  <h5>1. Artifact Description</h5>
+  <p>
+    This artifact is my Android inventory app that uses SQLite to store user and inventory data.
+  </p>
+
+  <h5>2. Enhancements</h5>
+  <p>
+    I improved the database by adding password hashing, full CRUD functionality, and better validation to prevent bad data.
+  </p>
+
+  <h5>3. Course Outcomes</h5>
+  <p>
+    These changes show my ability to manage databases, improve security, and enhance application functionality.
+  </p>
+
+  <h5>4. Reflection</h5>
+  <p>
+    I learned the importance of database security and data validation. One challenge was making sure updates didn’t break existing features.
+  </p>
+
+  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
+    Download Full Narrative
+  </a>
 </div>
 </section>
     
