@@ -388,29 +388,29 @@
         <div class="card artifact-card">
           <span class="badge">Category 1</span>
           <h3>Software Design and Engineering</h3>
-          <p>
-            This enhancement focused on making the inventory app easier to read, maintain, and use.
-            I improved validation, cleaned up the structure, and made the code more organized.
-          </p>
-          <ul class="clean">
-            <li>Improved input validation</li>
-            <li>Cleaner organization of logic</li>
-            <li>Reduced hardcoded values</li>
-            <li>Better comments and readability</li>
-          </ul>
+        <p>
+          This enhancement focused on improving the structure, readability, and validation of the inventory app.
+          I organized the code more clearly, added input validation, and improved how the app handles add and update actions.
+        </p>
+        <ul class="clean">
+          <li>Improved input validation</li>
+          <li>Cleaner add/update logic</li>
+          <li>Better method organization</li>
+          <li>More readable code structure</li>
+        </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="software1.png" alt="Software design screenshot 1" class="clickable">
-              <p>Input validation added to prevent bad user input.</p>
+             <p>Input validation checks prevent empty fields, invalid numbers, and negative quantities.</p>
             </div>
             <div class="image-card">
               <img src="software2.png" alt="Software design screenshot 2" class="clickable">
-              <p>Cleaner method structure in the main activity.</p>
+              <p>Cleaner add and update button logic improves structure in the main activity.</p>
             </div>
             <div class="image-card">
               <img src="software3.png" alt="Software design screenshot 3" class="clickable">
-              <p>Improved readability with better organization and comments.</p>
+             <p>The update method improves readability by separating update behavior into its own section.</p>
             </div>
           </div>
 
@@ -422,30 +422,31 @@
 
         <div class="card artifact-card">
           <span class="badge">Category 2</span>
-          <h3>Algorithms and Data Structures</h3>
-          <p>
-            This enhancement focused on improving how inventory data is organized and displayed
-            by adding searching, sorting, and better use of data structures.
-          </p>
-          <ul class="clean">
-            <li>Search functionality</li>
-            <li>Sorting by item name and quantity</li>
-            <li>ArrayList and HashMap usage</li>
-            <li>Cleaner data handling</li>
-          </ul>
+         <h3>Algorithms and Data Structures</h3>
+        <p>
+          This enhancement focused on improving how inventory data is stored and managed in the app.
+          I used an ArrayList to hold inventory items, loaded records from the database into objects,
+          and added update tracking to manage item changes more clearly.
+        </p>
+        <ul class="clean">
+          <li>ArrayList used to manage inventory items</li>
+          <li>Inventory data loaded into objects</li>
+          <li>Update tracking with item ID</li>
+          <li>Cleaner data handling in the app</li>
+        </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="algorithms1.png" alt="Algorithms screenshot 1" class="clickable">
-              <p>Search feature used to filter items by name.</p>
+             <p>ArrayList is used to store inventory items in memory.</p>
             </div>
             <div class="image-card">
               <img src="algorithms2.png" alt="Algorithms screenshot 2" class="clickable">
-              <p>Sorting logic used to organize inventory items.</p>
+             <p>The app loads database records into InventoryItem objects for display and management.</p>
             </div>
             <div class="image-card">
               <img src="algorithms3.png" alt="Algorithms screenshot 3" class="clickable">
-              <p>Improved data handling with lists and supporting logic.</p>
+             <p>Update tracking logic stores the selected item and prepares it for editing.</p>
             </div>
           </div>
 
@@ -456,31 +457,30 @@
         </div>
 
         <div class="card artifact-card">
-          <span class="badge">Category 3</span>
-          <h3>Databases</h3>
-          <p>
-            This enhancement focused on improving the SQLite database by adding stronger CRUD
-            functionality, update support, and better overall database use.
-          </p>
-          <ul class="clean">
-            <li>Full CRUD support</li>
-            <li>Update feature in the UI</li>
-            <li>Improved validation</li>
-            <li>Better database functionality</li>
-          </ul>
+        <h3>Databases</h3>
+        <p>
+          This enhancement focused on improving the SQLite database by strengthening the table structure,
+          validating inserted data, and adding better security for user information.
+        </p>
+        <ul class="clean">
+          <li>Improved database table structure</li>
+          <li>Validation before inserting data</li>
+          <li>Password hashing for security</li>
+          <li>Better overall database functionality</li>
+        </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="database1.png" alt="Database screenshot 1" class="clickable">
-              <p>Database table structure for storing inventory data.</p>
+            <p>Database tables were created to store user and inventory information.</p>
             </div>
             <div class="image-card">
               <img src="database2.png" alt="Database screenshot 2" class="clickable">
-              <p>Code showing item insert and retrieval logic.</p>
+              <p>The addItem method validates input before inserting inventory data.</p>
             </div>
             <div class="image-card">
               <img src="database3.png" alt="Database screenshot 3" class="clickable">
-              <p>Update support added to complete CRUD functionality.</p>
+             <p>Password hashing was added to better protect user information.</p>
             </div>
           </div>
 
