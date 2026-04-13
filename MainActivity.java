@@ -4,70 +4,116 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
+// connects the inventory data to the RecyclerView
+// displays each inventory item on the screen
 public class MainActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
+
     private static final int SMS_PERMISSION_CODE = 100;
-    RecyclerView recyclerView;
-    DBHelper dbHelper;
-    InventoryAdapter adapter;
-    ArrayList<InventoryItem> inventoryList;
-    EditText editTextItemName, editTextItemQuantity;
-    Button buttonAddItem;
+    private static final String ITEM_ADDED_MESSAGE = "Alert: New item added to inventory!";
+
+    private RecyclerView recyclerView;
+    private DBHelper dbHelper;
+    private InventoryAdapter adapter;
+    private ArrayList<InventoryItem> inventoryList;
+    private EditText editTextItemName;
+    private EditText editTextItemQuantity;
+    private Button buttonAddItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeViews();
+        setupRecyclerView();
+        loadInventoryData();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
         recyclerView = findViewById(R.id.recyclerViewInventory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         editTextItemName = findViewById(R.id.editTextItemName);
         editTextItemQuantity = findViewById(R.id.editTextItemQuantity);
         buttonAddItem = findViewById(R.id.buttonAddItem);
+
         dbHelper = new DBHelper(this);
         inventoryList = new ArrayList<>();
-        loadInventoryData();
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new InventoryAdapter(inventoryList, this);
         recyclerView.setAdapter(adapter);
+    }
 
-        buttonAddItem.setOnClickListener(v -> {
-            String name = editTextItemName.getText().toString().trim();
-            String quantityStr = editTextItemQuantity.getText().toString().trim();
-            if (name.isEmpty() || quantityStr.isEmpty()) {
-                Toast.makeText(this, "Enter item name and quantity", Toast.LENGTH_SHORT).show();
-            } else {
-                int quantity = Integer.parseInt(quantityStr);
-                if (dbHelper.addItem(name, quantity)) {
-                    Toast.makeText(this, "Item added", Toast.LENGTH_SHORT).show();
-                    reloadInventoryData();
-                    requestSmsPermission();
-                } else {
-                    Toast.makeText(this, "Failed to add item", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    private void setupClickListeners() {
+        buttonAddItem.setOnClickListener(v -> handleAddItem());
+    }
+
+    private void handleAddItem() {
+        String itemName = ValidationUtils.normalizeItemName(
+                editTextItemName.getText().toString()
+        );
+
+        String quantityText = editTextItemQuantity.getText().toString().trim();
+        Integer quantity = ValidationUtils.parsePositiveQuantity(quantityText);
+
+        if (ValidationUtils.isBlank(itemName)) {
+            showToast("Enter an item name.");
+            return;
+        }
+
+        if (quantity == null) {
+            showToast("Enter a valid quantity greater than 0.");
+            return;
+        }
+
+        if (dbHelper.addItem(itemName, quantity)) {
+            showToast("Item added.");
+            clearItemInputs();
+            reloadInventoryData();
+            requestSmsPermissionIfNeeded();
+        } else {
+            showToast("Failed to add item.");
+        }
+    }
+
+    private void clearItemInputs() {
+        editTextItemName.setText("");
+        editTextItemQuantity.setText("");
     }
 
     private void loadInventoryData() {
         inventoryList.clear();
         Cursor cursor = dbHelper.getAllItems();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_ID));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_NAME));
-                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_QUANTITY));
-                inventoryList.add(new InventoryItem(id, name, quantity));
-            } while (cursor.moveToNext());
+
+        if (cursor == null) {
+            return;
+        }
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_ID));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_NAME));
+                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_QUANTITY));
+
+                    inventoryList.add(new InventoryItem(id, name, quantity));
+                } while (cursor.moveToNext());
+            }
+        } finally {
             cursor.close();
         }
     }
@@ -80,16 +126,26 @@ public class MainActivity extends AppCompatActivity implements InventoryAdapter.
     @Override
     public void onDeleteClick(int id) {
         if (dbHelper.deleteItem(id)) {
-            Toast.makeText(this, "Item deleted", Toast.LENGTH_SHORT).show();
+            showToast("Item deleted.");
             reloadInventoryData();
         } else {
-            Toast.makeText(this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+            showToast("Failed to delete item.");
         }
     }
 
-    private void requestSmsPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+    private void requestSmsPermissionIfNeeded() {
+        if (!AppPreferences.hasNotificationPhoneNumber(this)) {
+            showToast("No SMS phone number saved, so notification was skipped.");
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    SMS_PERMISSION_CODE
+            );
         } else {
             sendSmsNotification();
         }
@@ -98,18 +154,26 @@ public class MainActivity extends AppCompatActivity implements InventoryAdapter.
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == SMS_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            sendSmsNotification();
-        } else {
-            Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == SMS_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendSmsNotification();
+            } else {
+                showToast("SMS permission denied.");
+            }
         }
     }
 
     private void sendSmsNotification() {
-        String phoneNumber = "5551234567";
-        String message = "Alert: New item added to inventory!";
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-        Toast.makeText(this, "SMS sent!", Toast.LENGTH_SHORT).show();
+        String phoneNumber = AppPreferences.getNotificationPhoneNumber(this);
+        boolean smsSent = SmsUtils.sendSms(this, phoneNumber, ITEM_ADDED_MESSAGE);
+
+        if (smsSent) {
+            showToast("SMS sent.");
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
