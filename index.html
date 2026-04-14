@@ -129,7 +129,7 @@
       margin-bottom: 10px;
     }
 
-    h2, h3, h4 {
+    h2, h3, h4, h5 {
       margin-top: 0;
     }
 
@@ -182,13 +182,6 @@
 
     .artifact-card h3 {
       margin-bottom: 8px;
-    }
-
-    .artifact-card .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
     }
 
     .artifact-card .links a,
@@ -244,13 +237,85 @@
       color: var(--muted);
     }
 
+    .file-section {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    .file-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .file-box {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .file-box h4 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .file-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .file-box li {
+      margin-bottom: 8px;
+    }
+
+    .file-box a {
+      text-decoration: none;
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+
+    .file-box a:hover {
+      text-decoration: underline;
+    }
+
+    .zip-box {
+      margin-top: 14px;
+      padding: 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+    }
+
+    .zip-box h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .zip-box a {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--accent);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .zip-box a:hover {
+      background: var(--accent-dark);
+    }
+
     footer {
       text-align: center;
       color: var(--muted);
       padding: 26px 18px 40px;
     }
 
-    /* IMAGE MODAL */
     .modal {
       display: none;
       position: fixed;
@@ -299,18 +364,19 @@
       header h1 {
         font-size: 1.9rem;
       }
-      .narrative-links {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
 
-.narrative-links a {
-  text-decoration: none;
-  color: var(--accent-dark);
-  font-weight: 700;
-}
+      .narrative-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .narrative-links a {
+        text-decoration: none;
+        color: var(--accent-dark);
+        font-weight: 700;
+      }
     }
   </style>
 </head>
@@ -375,8 +441,7 @@
         <h2 class="section-title">Code Review</h2>
         <div class="button-row">
           <a class="btn" href="https://youtu.be/DmFTupVVlIA" target="_blank">Watch Code Review</a>
-          <a class="btn" href="https://github.com/britttoni/britttoni.github.io/blob/main/CS360_project1.zip" target="_blank">Orginal Code File</a>
-          
+          <a class="btn" href="https://github.com/britttoni/britttoni.github.io/blob/main/CS360_project1.zip" target="_blank">Original Code File</a>
         </div>
       </div>
     </section>
@@ -388,21 +453,21 @@
         <div class="card artifact-card">
           <span class="badge">Category 1</span>
           <h3>Software Design and Engineering</h3>
-        <p>
-          This enhancement focused on improving the structure, readability, and validation of the inventory app.
-          I organized the code more clearly, added input validation, and improved how the app handles add and update actions.
-        </p>
-        <ul class="clean">
-          <li>Improved input validation</li>
-          <li>Cleaner add/update logic</li>
-          <li>Better method organization</li>
-          <li>More readable code structure</li>
-        </ul>
+          <p>
+            This enhancement focused on improving the structure, readability, and validation of the inventory app.
+            I organized the code more clearly, added input validation, and improved how the app handles add and update actions.
+          </p>
+          <ul class="clean">
+            <li>Improved input validation</li>
+            <li>Cleaner add/update logic</li>
+            <li>Better method organization</li>
+            <li>More readable code structure</li>
+          </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="software1.png" alt="Software design screenshot 1" class="clickable">
-             <p>Improved input validation added to prevent empty fields, invalid numbers, and incorrect user input..</p>
+              <p>Improved input validation added to prevent empty fields, invalid numbers, and incorrect user input.</p>
             </div>
             <div class="image-card">
               <img src="software2.png" alt="Software design screenshot 2" class="clickable">
@@ -410,105 +475,114 @@
             </div>
             <div class="image-card">
               <img src="software3.png" alt="Software design screenshot 3" class="clickable">
-             <p>Made improvements in code structure and comments, making the application more organized and easier to understand.</p>
+              <p>Made improvements in code structure and comments, making the application more organized and easier to understand.</p>
             </div>
           </div>
 
-<div class="links">
-    <p><strong>Original Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-        
-    </ul>
+          <div class="file-section">
+            <p class="muted">View the original file, updated file, or download the full project zip.</p>
 
-    <p><strong>Updated Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(1).java" target="_blank">MainActivity.java</a></li>
-        
-    </ul>
+            <div class="file-groups">
+              <div class="file-box">
+                <h4>Original Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
+                </ul>
+              </div>
 
-  <p><strong>Full App ZipFile</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Artifacts.zip" target="_blank">Category 1</a></li>
-        
-    </ul>
-</div>
-          
-            
-       
+              <div class="file-box">
+                <h4>Updated Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(1).java" target="_blank">MainActivity.java</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="zip-box">
+              <h4>Full App Zip File</h4>
+              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Artifacts.zip" target="_blank">Download Category 1 Zip</a>
+            </div>
+          </div>
+        </div>
 
         <div class="card artifact-card">
           <span class="badge">Category 2</span>
-         <h3>Algorithms and Data Structures</h3>
-        <p>
-          This enhancement focused on improving how inventory data is stored and managed in the app.
-          I used an ArrayList to hold inventory items, loaded records from the database into objects,
-          and added update tracking to manage item changes more clearly.
-        </p>
-        <ul class="clean">
-          <li>ArrayList used to manage inventory items</li>
-          <li>Inventory data loaded into objects</li>
-          <li>Update tracking with item ID</li>
-          <li>Cleaner data handling in the app</li>
-        </ul>
+          <h3>Algorithms and Data Structures</h3>
+          <p>
+            This enhancement focused on improving how inventory data is stored and managed in the app.
+            I used an ArrayList to hold inventory items, loaded records from the database into objects,
+            and added update tracking to manage item changes more clearly.
+          </p>
+          <ul class="clean">
+            <li>ArrayList used to manage inventory items</li>
+            <li>Inventory data loaded into objects</li>
+            <li>Update tracking with item ID</li>
+            <li>Cleaner data handling in the app</li>
+          </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="algorithms1.png" alt="Algorithms screenshot 1" class="clickable">
-             <p>Created search functionality that filters inventory items based on user input, demonstrating how data can be processed efficiently</p>
+              <p>Created search functionality that filters inventory items based on user input, demonstrating how data can be processed efficiently.</p>
             </div>
             <div class="image-card">
               <img src="algorithms2.png" alt="Algorithms screenshot 2" class="clickable">
-             <p>Sorting logic used to organize inventory items by name or quantity, improving how data is displayed to the user.</p>
+              <p>Sorting logic used to organize inventory items by name or quantity, improving how data is displayed to the user.</p>
             </div>
             <div class="image-card">
               <img src="algorithms3.png" alt="Algorithms screenshot 3" class="clickable">
-             <p>Demonstrated the use of data structures like ArrayList and HashMap to store and manage inventory items more efficiently.</p>
+              <p>Demonstrated the use of data structures like ArrayList and HashMap to store and manage inventory items more efficiently.</p>
             </div>
           </div>
 
-          <div class="links">
-    <p><strong>Original Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils.java" target="_blank">InventoryUtils.java</a></li>
-      <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
-    </ul>
+          <div class="file-section">
+            <p class="muted">View the original files, updated files, or download the full project zip.</p>
 
-    <p><strong>Updated Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(2).java" target="_blank">MainActivity.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils(2).java" target="_blank">InventoryUtils.java</a></li>
-      <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(2).java" target="_blank">InventoryAdapter.java</a></li>
-    </ul>
-            <p><strong>Full App ZipFile</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Artifacts.zip" target="_blank">Category 2</a></li>
-        
-    </ul>
+            <div class="file-groups">
+              <div class="file-box">
+                <h4>Original Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils.java" target="_blank">InventoryUtils.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
+                </ul>
+              </div>
 
-</div>
-           
-          
+              <div class="file-box">
+                <h4>Updated Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(2).java" target="_blank">MainActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils(2).java" target="_blank">InventoryUtils.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(2).java" target="_blank">InventoryAdapter.java</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="zip-box">
+              <h4>Full App Zip File</h4>
+              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Artifacts.zip" target="_blank">Download Category 2 Zip</a>
+            </div>
+          </div>
+        </div>
 
         <div class="card artifact-card">
           <span class="badge">Category 3</span>
-        <h3>Databases</h3>
-        <p>
-          This enhancement focused on improving the SQLite database by strengthening the table structure,
-          validating inserted data, and adding better security for user information.
-        </p>
-        <ul class="clean">
-          <li>Improved database table structure</li>
-          <li>Validation before inserting data</li>
-          <li>Password hashing for security</li>
-          <li>Better overall database functionality</li>
-        </ul>
+          <h3>Databases</h3>
+          <p>
+            This enhancement focused on improving the SQLite database by strengthening the table structure,
+            validating inserted data, and adding better security for user information.
+          </p>
+          <ul class="clean">
+            <li>Improved database table structure</li>
+            <li>Validation before inserting data</li>
+            <li>Password hashing for security</li>
+            <li>Better overall database functionality</li>
+          </ul>
 
           <div class="image-gallery">
             <div class="image-card">
               <img src="database1.png" alt="Database screenshot 1" class="clickable">
-            <p>Database tables were created to store user and inventory information.</p>
+              <p>Database tables were created to store user and inventory information.</p>
             </div>
             <div class="image-card">
               <img src="database2.png" alt="Database screenshot 2" class="clickable">
@@ -516,168 +590,173 @@
             </div>
             <div class="image-card">
               <img src="database3.png" alt="Database screenshot 3" class="clickable">
-             <p>Implementation of password hashing to improve security and protect user information.</p>
+              <p>Implementation of password hashing to improve security and protect user information.</p>
             </div>
           </div>
 
-<div class="links">
-    <p><strong>Original Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper.java" target="_blank">DBHelper.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity.java" target="_blank">LoginActivity.java</a></li>
-      <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
-    </ul>
+          <div class="file-section">
+            <p class="muted">View the original files, updated files, or download the full project zip.</p>
 
-    <p><strong>Updated Code Files:</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper(3).java" target="_blank">DBHelper.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(3).java" target="_blank">MainActivity.java</a></li>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity(3).java" target="_blank">LoginActivity.java</a></li>
-      <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(3).java" target="_blank">InventoryAdapter.java</a></li>
-    </ul>
-</div>
-          <p><strong>Full App ZipFile</strong></p>
-    <ul>
-        <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Artifacts.zip" target="_blank">Category 3</a></li>
-        
-    </ul>
+            <div class="file-groups">
+              <div class="file-box">
+                <h4>Original Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper.java" target="_blank">DBHelper.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity.java" target="_blank">LoginActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
+                </ul>
+              </div>
 
-      
+              <div class="file-box">
+                <h4>Updated Code Files</h4>
+                <ul>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper(3).java" target="_blank">DBHelper.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(3).java" target="_blank">MainActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity(3).java" target="_blank">LoginActivity.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(3).java" target="_blank">InventoryAdapter.java</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="zip-box">
+              <h4>Full App Zip File</h4>
+              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Artifacts.zip" target="_blank">Download Category 3 Zip</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <section id="narratives">
-  <div class="grid">
+      <div class="grid">
 
-    
-    <div class="card">
-      <h3>Professional Self-Assessment</h3>
-      <p class="muted">
-        This section introduces my portfolio and reflects on the skills I developed throughout the Computer Science program.
-      </p>
-      <p>I feel I have built a solid foundation in coding, problem solving and software development due to the CS program. While working through my courses and developing my ePortfolio, it has allowed me to identify my strengths in my technical skills and gain confidence in preparing for a career in the field. It also gave me a clearer understanding of how the concepts that I have learned connect and can be applied to real situations. </p>
-        <p>One of the ways this program has helped me grow is in software development. For example, I created an Android inventory app that allows users to register, login, and manage inventory items using a SQLite database. While building and improving this app, I learned how to organize code, improve functionality and make my application more user friendly. Enhancing this project for my ePortfolio also allowed me to focus on writing cleaner code, improving validation and making the overall design more efficient and easier to maintain. These experiences have helped me feel more confident in my ability to build and improve software.</p>
- <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app. </p>
-      <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app. </p>
-      <p>Another important skill I gained is working with databases. I used SQLite to store and manage user and inventory data and implement CRUD operations. This experience helped me understand how data is stored, accessed, and updated in an app. It also showed me the importance of maintaining accurate and reliable data. </p>
-      <p>Security is another area I become more aware of throughout the program. For example, I implemented password hashing in my app to protect user information and added input validation to prevent invalid or harmful data from being entered. These experiences helped me begin developing a security mindset by thinking about how systems can be protected and how vulnerabilities can be prevented. </p>
-      <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential. </p>
-      <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential. </p>
-      <p>
-My ePortfolio brings all these skills together and demonstrates my overall growth in computer science. The main artifact in my portfolio is my Android inventory app, which I enhanced in three key areas: software design and engineering, algorithms and data structures, and databases. Each enhancement highlights a different set of skills, such as improving code structure, adding search and sorting features, and strengthening database functionality. Together, these artifacts show my ability to analyze, improve and apply technical solutions. </p>
-      <p>Overall, this ePortfolio represents my progress throughout the computer science program and shows that I am prepared to enter the field with a solid foundation in programming, problem solving and application development. It also reflects my ability to continue learning and improving my skills as I move forward in my career. </p>
+        <div class="card">
+          <h3>Professional Self-Assessment</h3>
+          <p class="muted">
+            This section introduces my portfolio and reflects on the skills I developed throughout the Computer Science program.
+          </p>
+          <p>I feel I have built a solid foundation in coding, problem solving and software development due to the CS program. While working through my courses and developing my ePortfolio, it has allowed me to identify my strengths in my technical skills and gain confidence in preparing for a career in the field. It also gave me a clearer understanding of how the concepts that I have learned connect and can be applied to real situations.</p>
+          <p>One of the ways this program has helped me grow is in software development. For example, I created an Android inventory app that allows users to register, login, and manage inventory items using a SQLite database. While building and improving this app, I learned how to organize code, improve functionality and make my application more user friendly. Enhancing this project for my ePortfolio also allowed me to focus on writing cleaner code, improving validation and making the overall design more efficient and easier to maintain. These experiences have helped me feel more confident in my ability to build and improve software.</p>
+          <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app.</p>
+          <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app.</p>
+          <p>Another important skill I gained is working with databases. I used SQLite to store and manage user and inventory data and implement CRUD operations. This experience helped me understand how data is stored, accessed, and updated in an app. It also showed me the importance of maintaining accurate and reliable data.</p>
+          <p>Security is another area I become more aware of throughout the program. For example, I implemented password hashing in my app to protect user information and added input validation to prevent invalid or harmful data from being entered. These experiences helped me begin developing a security mindset by thinking about how systems can be protected and how vulnerabilities can be prevented.</p>
+          <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential.</p>
+          <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential.</p>
+          <p>My ePortfolio brings all these skills together and demonstrates my overall growth in computer science. The main artifact in my portfolio is my Android inventory app, which I enhanced in three key areas: software design and engineering, algorithms and data structures, and databases. Each enhancement highlights a different set of skills, such as improving code structure, adding search and sorting features, and strengthening database functionality. Together, these artifacts show my ability to analyze, improve and apply technical solutions.</p>
+          <p>Overall, this ePortfolio represents my progress throughout the computer science program and shows that I am prepared to enter the field with a solid foundation in programming, problem solving and application development. It also reflects my ability to continue learning and improving my skills as I move forward in my career.</p>
 
-      <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
-        View Self-Assessment
-      </a>
-    </div>
+          <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
+            View Self-Assessment
+          </a>
+        </div>
 
-   
-<div class="card">
-  <h3>Enhancement Narratives</h3>
-  <p class="muted">
-    These narratives explain how I improved each category artifact and what I learned from the process.
-  </p>
+        <div class="card">
+          <h3>Enhancement Narratives</h3>
+          <p class="muted">
+            These narratives explain how I improved each category artifact and what I learned from the process.
+          </p>
 
-  <div class="grid" style="margin-top: 15px;">
+          <div class="grid" style="margin-top: 15px;">
 
+            <div class="card">
+              <span class="badge">Category 1</span>
+              <h4>Software Design and Engineering</h4>
+              <p class="muted">Focus: Code structure, validation, and readability</p>
 
-    <div class="card">
-  <span class="badge">Category 1</span>
-  <h4>Software Design and Engineering</h4>
+              <h5>1. Artifact Description</h5>
+              <p>
+                The artifact I chose for this milestone is my Android inventory app that I created earlier in CS 360. The app lets users create an account, login, and manage inventory items while storing data using SQLite and sending SMS notifications.
+              </p>
 
-  <p class="muted">Focus: Code structure, validation, and readability</p>
+              <h5>2. Why I Chose This Artifact</h5>
+              <p>
+                I chose this project because it shows multiple skills working together, including user interaction, database use, and app design. I improved the structure by breaking large sections of code into smaller methods and improving organization.
+              </p>
 
-  <h5>1. Artifact Description</h5>
-  <p>
-    The artifact I chose for this milestone is my Android inventory app that I created earlier in CS 360. The app lets users create an account, login, and manage inventory items while storing data using SQLite and sending SMS notifications.
-  </p>
+              <h5>3. Course Outcomes</h5>
+              <p>
+                These improvements align with my original plan by showing better software design practices, cleaner code, and improved validation.
+              </p>
 
-  <h5>2. Why I Chose This Artifact</h5>
-  <p>
-    I chose this project because it shows multiple skills working together, including user interaction, database use, and app design. I improved the structure by breaking large sections of code into smaller methods and improving organization.
-  </p>
+              <h5>4. Reflection</h5>
+              <p>
+                I learned that working code is not always well-designed code. One challenge was refactoring without breaking functionality and improving validation in a user-friendly way.
+              </p>
 
-  <h5>3. Course Outcomes</h5>
-  <p>
-    These improvements align with my original plan by showing better software design practices, cleaner code, and improved validation.
-  </p>
+              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
+                Download Full Narrative
+              </a>
+            </div>
 
-  <h5>4. Reflection</h5>
-  <p>
-    I learned that working code is not always well-designed code. One challenge was refactoring without breaking functionality and improving validation in a user-friendly way.
-  </p>
+            <div class="card">
+              <span class="badge">Category 2</span>
+              <h4>Algorithms and Data Structures</h4>
+              <p class="muted">Focus: Data handling, searching, and sorting</p>
 
-  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
-    Download Full Narrative
-  </a>
-</div>
+              <h5>1. Artifact Description</h5>
+              <p>
+                This artifact is my Android inventory app that allows users to manage inventory using SQLite and display data through a RecyclerView.
+              </p>
 
-  
-   <div class="card">
-  <span class="badge">Category 2</span>
-  <h4>Algorithms and Data Structures</h4>
+              <h5>2. Enhancements</h5>
+              <p>
+                I improved how data is handled by adding sorting, filtering, and search functionality. I also used ArrayList and HashMap to better organize data and implemented binary search for faster lookup.
+              </p>
 
-  <p class="muted">Focus: Data handling, searching, and sorting</p>
+              <h5>3. Course Outcomes</h5>
+              <p>
+                These improvements demonstrate my understanding of data structures and algorithms and how they improve performance and efficiency.
+              </p>
 
-  <h5>1. Artifact Description</h5>
-  <p>
-    This artifact is my Android inventory app that allows users to manage inventory using SQLite and display data through a RecyclerView.
-  </p>
+              <h5>4. Reflection</h5>
+              <p>
+                I learned how important it is to choose the right data structure. One challenge was making sure the RecyclerView updated correctly after adding new logic.
+              </p>
 
-  <h5>2. Enhancements</h5>
-  <p>
-    I improved how data is handled by adding sorting, filtering, and search functionality. I also used ArrayList and HashMap to better organize data and implemented binary search for faster lookup.
-  </p>
+              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
+                View Full Narrative
+              </a>
+            </div>
 
-  <h5>3. Course Outcomes</h5>
-  <p>
-    These improvements demonstrate my understanding of data structures and algorithms and how they improve performance and efficiency.
-  </p>
+            <div class="card">
+              <span class="badge">Category 3</span>
+              <h4>Databases</h4>
+              <p class="muted">Focus: Database design, CRUD, and security</p>
 
-  <h5>4. Reflection</h5>
-  <p>
-    I learned how important it is to choose the right data structure. One challenge was making sure the RecyclerView updated correctly after adding new logic.
-  </p>
+              <h5>1. Artifact Description</h5>
+              <p>
+                This artifact is my Android inventory app that uses SQLite to store user and inventory data.
+              </p>
 
-  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
-    View Full Narrative
-  </a>
-</div>
+              <h5>2. Enhancements</h5>
+              <p>
+                I improved the database by adding password hashing, full CRUD functionality, and better validation to prevent bad data.
+              </p>
 
+              <h5>3. Course Outcomes</h5>
+              <p>
+                These changes show my ability to manage databases, improve security, and enhance application functionality.
+              </p>
 
-   <div class="card">
-  <span class="badge">Category 3</span>
-  <h4>Databases</h4>
+              <h5>4. Reflection</h5>
+              <p>
+                I learned the importance of database security and data validation. One challenge was making sure updates didn’t break existing features.
+              </p>
 
-  <p class="muted">Focus: Database design, CRUD, and security</p>
+              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
+                Download Full Narrative
+              </a>
+            </div>
 
-  <h5>1. Artifact Description</h5>
-  <p>
-    This artifact is my Android inventory app that uses SQLite to store user and inventory data.
-  </p>
+          </div>
+        </div>
 
-  <h5>2. Enhancements</h5>
-  <p>
-    I improved the database by adding password hashing, full CRUD functionality, and better validation to prevent bad data.
-  </p>
+      </div>
+    </section>
 
-  <h5>3. Course Outcomes</h5>
-  <p>
-    These changes show my ability to manage databases, improve security, and enhance application functionality.
-  </p>
-
-  <h5>4. Reflection</h5>
-  <p>
-    I learned the importance of database security and data validation. One challenge was making sure updates didn’t break existing features.
-  </p>
-
-  <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
-    Download Full Narrative
-  </a>
-</div>
-</section>
-    
     <section id="contact">
       <div class="card">
         <span class="badge">Contact</span>
@@ -695,7 +774,6 @@ My ePortfolio brings all these skills together and demonstrates my overall growt
     <p>CS 499 ePortfolio | Toni Britt</p>
   </footer>
 
-  
   <div id="imageModal" class="modal">
     <span class="close">&times;</span>
     <img class="modal-content" id="modalImage" alt="Expanded screenshot">
