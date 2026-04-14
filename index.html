@@ -465,19 +465,27 @@
           </ul>
 
           <div class="image-gallery">
-            <div class="image-card">
-              <img src="software1.png" alt="Software design screenshot 1" class="clickable">
-              <p>Improved input validation added to prevent empty fields, invalid numbers, and incorrect user input.</p>
-            </div>
-            <div class="image-card">
-              <img src="software2.png" alt="Software design screenshot 2" class="clickable">
-              <p>Reorganized code into cleaner methods, improving readability and making the app easier to maintain.</p>
-            </div>
-            <div class="image-card">
-              <img src="software3.png" alt="Software design screenshot 3" class="clickable">
-              <p>Made improvements in code structure and comments, making the application more organized and easier to understand.</p>
-            </div>
-          </div>
+  <div class="image-card">
+    <img src="software1.png" alt="Software design screenshot 1" class="clickable">
+    <p>
+      MainActivity was refactored by breaking large sections of code into smaller helper methods such as initializeViews(), setupRecyclerView(), and setupClickListeners(), improving organization and readability.
+    </p>
+  </div>
+
+  <div class="image-card">
+    <img src="software2.png" alt="Software design screenshot 2" class="clickable">
+    <p>
+      Input validation was improved using ValidationUtils to check for empty item names and invalid quantities, preventing crashes and ensuring correct user input.
+    </p>
+  </div>
+
+  <div class="image-card">
+    <img src="software3.png" alt="Software design screenshot 3" class="clickable">
+    <p>
+      Hardcoded phone numbers were removed and replaced with AppPreferences, allowing the app to use stored user data and making it more flexible and realistic.
+    </p>
+  </div>
+</div>
 
           <div class="file-section">
             <p class="muted">View the original file, updated file, or download the full project zip.</p>
