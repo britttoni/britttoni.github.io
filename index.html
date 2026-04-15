@@ -191,12 +191,6 @@
       font-weight: 700;
     }
 
-    .checklist {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-
     .image-gallery {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -374,19 +368,6 @@
       header h1 {
         font-size: 1.9rem;
       }
-
-      .narrative-links {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .narrative-links a {
-        text-decoration: none;
-        color: var(--accent-dark);
-        font-weight: 700;
-      }
     }
   </style>
 </head>
@@ -403,6 +384,7 @@
 
   <nav>
     <ul>
+      <li><a href="#self-assessment">Self-Assessment</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#code-review">Code Review</a></li>
       <li><a href="#artifacts">Artifacts</a></li>
@@ -412,6 +394,46 @@
   </nav>
 
   <main class="container">
+
+    <section id="self-assessment">
+      <div class="card">
+        <h2 class="section-title">Professional Self-Assessment</h2>
+        <p class="muted">
+          This self-assessment introduces my portfolio and explains the growth I experienced throughout the Computer Science program.
+        </p>
+        <p>
+          My area of focus is <strong>mobile application development</strong>, especially building user-friendly Android applications that connect software design, algorithms, and database functionality into one working solution.
+        </p>
+        <p>
+          Throughout the Computer Science program, I have built a stronger foundation in coding, problem solving, and software development. Working through my coursework and developing this ePortfolio helped me identify my strengths, improve my technical skills, and gain more confidence in preparing for a career in the field. It also gave me a clearer understanding of how the concepts I learned connect and can be applied in real situations.
+        </p>
+        <p>
+          One of the biggest areas of growth for me was software development. In my Android inventory app, I learned how to organize code, improve functionality, and make an application more user friendly. Enhancing this project for my ePortfolio helped me focus on cleaner code, stronger validation, and a structure that is easier to maintain. These experiences made me more confident in my ability to design and improve software instead of only writing code that works.
+        </p>
+        <p>
+          I also developed a better understanding of data structures and algorithms. In my inventory app, I added searching, sorting, filtering, and stronger data handling using structures like ArrayList and HashMap. This showed me how important it is to choose the right data structure and algorithm based on the problem being solved. It also helped me see how performance and user experience are connected.
+        </p>
+        <p>
+          Another important skill I gained is working with databases. I used SQLite to store and manage user and inventory data and implement CRUD operations. This experience helped me understand how data is stored, accessed, updated, and validated within an app. It also showed me how important reliable data management is to the overall quality of an application.
+        </p>
+        <p>
+          Security is another area I became more aware of throughout the program. For example, I implemented password hashing in my app to help protect user information and added validation to prevent invalid or harmful input from being entered. This helped me begin developing a security mindset by thinking about how applications can be protected, how vulnerabilities can be reduced, and how user data can be handled more responsibly.
+        </p>
+        <p>
+          I also improved my communication and collaboration skills. While I did not work in many formal team-based projects, I still gained experience communicating technical ideas through documentation, milestone narratives, and my code review video. I learned that collaboration is not only about coding with others, but also about writing clear code, adding understandable comments, and explaining technical decisions in ways that different audiences can follow. These skills matter when working with peers, instructors, managers, or non-technical stakeholders who need to understand the purpose and value of a project.
+        </p>
+        <p>
+          This portfolio also shows how my artifacts fit together as one complete body of work. I used the same Android inventory application and enhanced it in three different categories: software design and engineering, algorithms and data structures, and databases. Together, these enhancements show my ability to analyze an existing project, improve it in meaningful ways, and explain how each improvement supports broader computer science outcomes.
+        </p>
+        <p>
+          Overall, this ePortfolio represents my progress throughout the Computer Science program and shows that I am prepared to enter the field with a stronger foundation in programming, problem solving, mobile development, data handling, and software improvement.
+        </p>
+
+        <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
+          View Self-Assessment
+        </a>
+      </div>
+    </section>
 
     <section id="about">
       <div class="hero-grid">
@@ -439,8 +461,8 @@
             and portfolio reflections from the CS 499 capstone course.
           </p>
           <p>
-            Each section highlights a different part of my growth in computer science and shows
-            how I improved my Android inventory application.
+            My portfolio is centered on mobile app development and shows how one Android project can be enhanced
+            to demonstrate software design, algorithmic thinking, and database improvement.
           </p>
         </div>
       </div>
@@ -558,6 +580,7 @@
                 <ul>
                   <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
                   <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils.java" target="_blank">InventoryUtils.java</a></li>
                 </ul>
               </div>
 
@@ -566,6 +589,7 @@
                 <ul>
                   <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(2).java" target="_blank">MainActivity.java</a></li>
                   <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(2).java" target="_blank">InventoryAdapter.java</a></li>
+                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils(2).java" target="_blank">InventoryUtils.java</a></li>
                 </ul>
               </div>
             </div>
@@ -643,27 +667,6 @@
 
     <section id="narratives">
       <div class="grid">
-
-        <div class="card">
-          <h3>Professional Self-Assessment</h3>
-          <p class="muted">
-            This section introduces my portfolio and reflects on the skills I developed throughout the Computer Science program.
-          </p>
-          <p>I feel I have built a solid foundation in coding, problem solving and software development due to the CS program. While working through my courses and developing my ePortfolio, it has allowed me to identify my strengths in my technical skills and gain confidence in preparing for a career in the field. It also gave me a clearer understanding of how the concepts that I have learned connect and can be applied to real situations.</p>
-          <p>One of the ways this program has helped me grow is in software development. For example, I created an Android inventory app that allows users to register, login, and manage inventory items using a SQLite database. While building and improving this app, I learned how to organize code, improve functionality and make my application more user friendly. Enhancing this project for my ePortfolio also allowed me to focus on writing cleaner code, improving validation and making the overall design more efficient and easier to maintain. These experiences have helped me feel more confident in my ability to build and improve software.</p>
-          <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app.</p>
-          <p>I also developed a better understanding of data structures and algorithms. Because of the assignments and projects, I have learned how to organize and manage data using structures like Array Lists and applying logic such as searching and sorting. In my inventory app, I added features that allowed users to search for items and sort them which helped improve both performance and usability. This showed me how important it is to choose the right data structures and algorithms when designing an app.</p>
-          <p>Another important skill I gained is working with databases. I used SQLite to store and manage user and inventory data and implement CRUD operations. This experience helped me understand how data is stored, accessed, and updated in an app. It also showed me the importance of maintaining accurate and reliable data.</p>
-          <p>Security is another area I become more aware of throughout the program. For example, I implemented password hashing in my app to protect user information and added input validation to prevent invalid or harmful data from being entered. These experiences helped me begin developing a security mindset by thinking about how systems can be protected and how vulnerabilities can be prevented.</p>
-          <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential.</p>
-          <p>In addition to technical skills, I improved my communication and collaboration abilities. While I did not work directly in team based projects, I gained experience communicating my ideas clearly though assignments, project documentation and code review video. I also learned how important it is to explain technical concepts in a way that different audiences, including non-technical people, can understand. These skills will be important when working in professional; environments where teamwork and communication are essential.</p>
-          <p>My ePortfolio brings all these skills together and demonstrates my overall growth in computer science. The main artifact in my portfolio is my Android inventory app, which I enhanced in three key areas: software design and engineering, algorithms and data structures, and databases. Each enhancement highlights a different set of skills, such as improving code structure, adding search and sorting features, and strengthening database functionality. Together, these artifacts show my ability to analyze, improve and apply technical solutions.</p>
-          <p>Overall, this ePortfolio represents my progress throughout the computer science program and shows that I am prepared to enter the field with a solid foundation in programming, problem solving and application development. It also reflects my ability to continue learning and improving my skills as I move forward in my career.</p>
-
-          <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
-            View Self-Assessment
-          </a>
-        </div>
 
         <div class="card">
           <h3>Enhancement Narratives</h3>
