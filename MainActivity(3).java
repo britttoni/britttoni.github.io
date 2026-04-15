@@ -1,820 +1,330 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS-499 ePortfolio</title>
-  <style>
-    :root {
-      --bg: #f7f9fc;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --accent-dark: #1d4ed8;
-      --border: #e5e7eb;
-      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+package com.example.cs360_project;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
+
+    private static final int SMS_PERMISSION_CODE = 100;
+    private static final String ITEM_ADDED_MESSAGE = "Alert: New item added to inventory!";
+
+    private RecyclerView recyclerView;
+    private DBHelper dbHelper;
+    private InventoryAdapter adapter;
+
+    // Full inventory list from database
+    private ArrayList<InventoryItem> inventoryList;
+
+    // What is currently shown on screen
+    private ArrayList<InventoryItem> displayedList;
+
+    // Faster lookup by item ID
+    private HashMap<Integer, InventoryItem> inventoryMap;
+
+    private EditText editTextItemName;
+    private EditText editTextItemQuantity;
+    private EditText editTextSearch;
+
+    private Button buttonAddItem;
+    private Button buttonSort;
+
+    // Toggle so the sort button can switch between name and quantity
+    private boolean sortByQuantity = false;
+
+    // Tracks update mode for full CRUD
+    private boolean isUpdating = false;
+    private int updatingItemId = -1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initializeViews();
+        setupRecyclerView();
+        loadInventoryData();
+        setupClickListeners();
     }
 
-    * {
-      box-sizing: border-box;
+    private void initializeViews() {
+        recyclerView = findViewById(R.id.recyclerViewInventory);
+        editTextItemName = findViewById(R.id.editTextItemName);
+        editTextItemQuantity = findViewById(R.id.editTextItemQuantity);
+        editTextSearch = findViewById(R.id.editTextSearch);
+        buttonAddItem = findViewById(R.id.buttonAddItem);
+        buttonSort = findViewById(R.id.buttonSort);
+
+        dbHelper = new DBHelper(this);
+        inventoryList = new ArrayList<>();
+        displayedList = new ArrayList<>();
+        inventoryMap = new HashMap<>();
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new InventoryAdapter(displayedList, this);
+        recyclerView.setAdapter(adapter);
     }
 
-    header {
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: white;
-      padding: 56px 20px 42px;
-      text-align: center;
+    private void setupClickListeners() {
+        buttonAddItem.setOnClickListener(v -> {
+            if (isUpdating) {
+                handleUpdateItem();
+            } else {
+                handleAddItem();
+            }
+        });
+
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterInventory(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+
+        buttonSort.setOnClickListener(v -> toggleSort());
     }
 
-    header h1 {
-      margin: 0 0 10px;
-      font-size: 2.3rem;
+    private void handleAddItem() {
+        String itemName = ValidationUtils.normalizeItemName(
+                editTextItemName.getText().toString()
+        );
+
+        String quantityText = editTextItemQuantity.getText().toString().trim();
+        Integer quantity = ValidationUtils.parsePositiveQuantity(quantityText);
+
+        if (ValidationUtils.isBlank(itemName)) {
+            showToast("Enter an item name.");
+            return;
+        }
+
+        if (quantity == null) {
+            showToast("Enter a valid quantity greater than 0.");
+            return;
+        }
+
+        if (dbHelper.addItem(itemName, quantity)) {
+            showToast("Item added.");
+            clearItemInputs();
+            reloadInventoryData();
+            requestSmsPermissionIfNeeded();
+        } else {
+            showToast("Failed to add item.");
+        }
     }
 
-    header p {
-      max-width: 850px;
-      margin: 0 auto;
-      font-size: 1.05rem;
+    private void handleUpdateItem() {
+        String itemName = ValidationUtils.normalizeItemName(
+                editTextItemName.getText().toString()
+        );
+
+        String quantityText = editTextItemQuantity.getText().toString().trim();
+        Integer quantity = ValidationUtils.parsePositiveQuantity(quantityText);
+
+        if (ValidationUtils.isBlank(itemName)) {
+            showToast("Enter an item name.");
+            return;
+        }
+
+        if (quantity == null) {
+            showToast("Enter a valid quantity greater than 0.");
+            return;
+        }
+
+        if (dbHelper.updateItem(updatingItemId, itemName, quantity)) {
+            showToast("Item updated.");
+            resetUpdateMode();
+            reloadInventoryData();
+        } else {
+            showToast("Update failed.");
+        }
     }
 
-    nav {
-      background: #ffffff;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    private void clearItemInputs() {
+        editTextItemName.setText("");
+        editTextItemQuantity.setText("");
     }
 
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 14px 18px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
+    private void resetUpdateMode() {
+        isUpdating = false;
+        updatingItemId = -1;
+        buttonAddItem.setText("Add Item");
+        clearItemInputs();
     }
 
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 8px;
+    private void loadInventoryData() {
+        inventoryList.clear();
+
+        Cursor cursor = dbHelper.getAllItems();
+
+        if (cursor == null) {
+            return;
+        }
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_ID));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_NAME));
+                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_QUANTITY));
+
+                    inventoryList.add(new InventoryItem(id, name, quantity));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        // Build map for faster lookup
+        inventoryMap = InventoryUtils.buildItemMap(inventoryList);
+
+        // Default sort by name when data loads
+        InventoryUtils.sortByName(inventoryList);
+
+        displayedList.clear();
+        displayedList.addAll(inventoryList);
     }
 
-    nav a:hover {
-      background: #eff6ff;
-      color: var(--accent-dark);
+    private void reloadInventoryData() {
+        loadInventoryData();
+
+        String currentSearch = editTextSearch.getText().toString().trim();
+        if (!currentSearch.isEmpty()) {
+            filterInventory(currentSearch);
+        } else {
+            adapter.updateData(displayedList);
+        }
     }
 
-    .container {
-      width: min(1120px, 92%);
-      margin: 32px auto 60px;
+    private void filterInventory(String query) {
+        ArrayList<InventoryItem> filteredList = InventoryUtils.filterByName(inventoryList, query);
+
+        // Keep current sort mode after filtering
+        if (sortByQuantity) {
+            InventoryUtils.sortByQuantityDescending(filteredList);
+        } else {
+            InventoryUtils.sortByName(filteredList);
+        }
+
+        displayedList.clear();
+        displayedList.addAll(filteredList);
+        adapter.updateData(displayedList);
     }
 
-    section {
-      margin-bottom: 34px;
+    private void toggleSort() {
+        sortByQuantity = !sortByQuantity;
+
+        if (sortByQuantity) {
+            InventoryUtils.sortByQuantityDescending(displayedList);
+            buttonSort.setText("Sort by Name");
+        } else {
+            InventoryUtils.sortByName(displayedList);
+            buttonSort.setText("Sort by Quantity");
+        }
+
+        adapter.updateData(displayedList);
     }
 
-    .section-title {
-      margin: 0 0 16px;
-      font-size: 1.6rem;
+    @Override
+    public void onDeleteClick(int id) {
+        InventoryItem item = inventoryMap.get(id);
+
+        if (dbHelper.deleteItem(id)) {
+            showToast("Item deleted.");
+
+            if (item != null) {
+                inventoryMap.remove(id);
+            }
+
+            if (isUpdating && updatingItemId == id) {
+                resetUpdateMode();
+            }
+
+            reloadInventoryData();
+        } else {
+            showToast("Failed to delete item.");
+        }
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: var(--shadow);
+    @Override
+    public void onUpdateClick(InventoryItem item) {
+        isUpdating = true;
+        updatingItemId = item.getId();
+
+        editTextItemName.setText(item.getName());
+        editTextItemQuantity.setText(String.valueOf(item.getQuantity()));
+        buttonAddItem.setText("Update Item");
+
+        showToast("Edit item then press Update.");
     }
 
-    .hero-grid,
-    .grid,
-    .artifact-grid {
-      display: grid;
-      gap: 20px;
+    private void requestSmsPermissionIfNeeded() {
+        if (!AppPreferences.hasNotificationPhoneNumber(this)) {
+            showToast("No SMS phone number saved, so notification was skipped.");
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    SMS_PERMISSION_CODE
+            );
+        } else {
+            sendSmsNotification();
+        }
     }
 
-    .hero-grid {
-      grid-template-columns: 1.2fr 0.8fr;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == SMS_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendSmsNotification();
+            } else {
+                showToast("SMS permission denied.");
+            }
+        }
     }
 
-    .grid {
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    private void sendSmsNotification() {
+        String phoneNumber = AppPreferences.getNotificationPhoneNumber(this);
+        boolean smsSent = SmsUtils.sendSms(this, phoneNumber, ITEM_ADDED_MESSAGE);
+
+        if (smsSent) {
+            showToast("SMS sent.");
+        }
     }
 
-    .artifact-grid {
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-
-    .badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #dbeafe;
-      color: #1d4ed8;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    h2, h3, h4, h5 {
-      margin-top: 0;
-    }
-
-    p {
-      margin: 0 0 12px;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .btn {
-      display: inline-block;
-      text-decoration: none;
-      background: var(--accent);
-      color: white;
-      padding: 11px 16px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
-
-    .btn:hover {
-      background: var(--accent-dark);
-    }
-
-    .btn.secondary {
-      background: #eef2ff;
-      color: #1f2937;
-    }
-
-    .btn.secondary:hover {
-      background: #e0e7ff;
-    }
-
-    ul.clean {
-      padding-left: 20px;
-      margin: 0;
-    }
-
-    ul.clean li {
-      margin-bottom: 8px;
-    }
-
-    .artifact-card h3 {
-      margin-bottom: 8px;
-    }
-
-    .artifact-card .links a,
-    .small-link {
-      text-decoration: none;
-      color: var(--accent-dark);
-      font-weight: 700;
-    }
-
-    .image-gallery {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 14px;
-      align-items: start;
-    }
-
-    .image-card {
-      background: #f9fafb;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: left;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .image-card img {
-      width: 100%;
-      max-width: 220px;
-      height: 120px;
-      object-fit: contain;
-      margin: 0 auto 10px;
-      display: block;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: white;
-      padding: 5px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .image-card img:hover {
-      transform: scale(1.03);
-    }
-
-    .image-card p {
-      font-size: 0.78rem;
-      line-height: 1.35;
-      margin: 0;
-      color: var(--muted);
-      width: 100%;
-      word-break: break-word;
-    }
-
-    .file-section {
-      margin-top: 18px;
-      border-top: 1px solid var(--border);
-      padding-top: 18px;
-    }
-
-    .file-groups {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 12px;
-    }
-
-    .file-box {
-      background: #f9fafb;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .file-box h4 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-      color: var(--text);
-    }
-
-    .file-box ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .file-box li {
-      margin-bottom: 8px;
-    }
-
-    .file-box a {
-      text-decoration: none;
-      color: var(--accent-dark);
-      font-weight: 600;
-    }
-
-    .file-box a:hover {
-      text-decoration: underline;
-    }
-
-    .zip-box {
-      margin-top: 14px;
-      padding: 14px;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 14px;
-    }
-
-    .zip-box h4 {
-      margin: 0 0 8px;
-      font-size: 1rem;
-    }
-
-    .zip-box a {
-      display: inline-block;
-      text-decoration: none;
-      background: var(--accent);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
-
-    .zip-box a:hover {
-      background: var(--accent-dark);
-    }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      padding: 26px 18px 40px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      padding-top: 60px;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    .modal-content {
-      display: block;
-      margin: auto;
-      max-width: 80%;
-      max-height: 80%;
-      border-radius: 10px;
-      background: white;
-      padding: 8px;
-    }
-
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 40px;
-      color: white;
-      font-size: 32px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    @media (max-width: 800px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .image-gallery {
-        grid-template-columns: 1fr;
-      }
-
-      .image-card img {
-        max-width: 100%;
-        height: auto;
-      }
-
-      header h1 {
-        font-size: 1.9rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Toni Britt CS-499 ePortfolio</h1>
-    <p>
-      Welcome to my Computer Science capstone portfolio. This site highlights my code review,
-      artifact enhancements, narratives, and professional self-assessment. My main artifact is an Android
-      inventory application that demonstrates software design and engineering, algorithms and data structures,
-      and databases.
-    </p>
-  </header>
-
-  <nav>
-    <ul>
-      <li><a href="#self-assessment">Self-Assessment</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#code-review">Code Review</a></li>
-      <li><a href="#artifacts">Artifacts</a></li>
-      <li><a href="#narratives">Narratives</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-
-  <main class="container">
-
-    <section id="self-assessment">
-      <div class="card">
-        <h2 class="section-title">Professional Self-Assessment</h2>
-        <p class="muted">
-          This self-assessment introduces my portfolio and explains the growth I experienced throughout the Computer Science program.
-        </p>
-        <p>
-          My area of focus is <strong>mobile application development</strong>, especially building user-friendly Android applications that connect software design, algorithms, and database functionality into one working solution.
-        </p>
-        <p>
-          Throughout the Computer Science program, I have built a stronger foundation in coding, problem solving, and software development. Working through my coursework and developing this ePortfolio helped me identify my strengths, improve my technical skills, and gain more confidence in preparing for a career in the field. It also gave me a clearer understanding of how the concepts I learned connect and can be applied in real situations.
-        </p>
-        <p>
-          One of the biggest areas of growth for me was software development. In my Android inventory app, I learned how to organize code, improve functionality, and make an application more user friendly. Enhancing this project for my ePortfolio helped me focus on cleaner code, stronger validation, and a structure that is easier to maintain. These experiences made me more confident in my ability to design and improve software instead of only writing code that works.
-        </p>
-        <p>
-          I also developed a better understanding of data structures and algorithms. In my inventory app, I added searching, sorting, filtering, and stronger data handling using structures like ArrayList and HashMap. This showed me how important it is to choose the right data structure and algorithm based on the problem being solved. It also helped me see how performance and user experience are connected.
-        </p>
-        <p>
-          Another important skill I gained is working with databases. I used SQLite to store and manage user and inventory data and implement CRUD operations. This experience helped me understand how data is stored, accessed, updated, and validated within an app. It also showed me how important reliable data management is to the overall quality of an application.
-        </p>
-        <p>
-          Security is another area I became more aware of throughout the program. For example, I implemented password hashing in my app to help protect user information and added validation to prevent invalid or harmful input from being entered. This helped me begin developing a security mindset by thinking about how applications can be protected, how vulnerabilities can be reduced, and how user data can be handled more responsibly.
-        </p>
-        <p>
-          I also improved my communication and collaboration skills. While I did not work in many formal team-based projects, I still gained experience communicating technical ideas through documentation, milestone narratives, and my code review video. I learned that collaboration is not only about coding with others, but also about writing clear code, adding understandable comments, and explaining technical decisions in ways that different audiences can follow. These skills matter when working with peers, instructors, managers, or non-technical stakeholders who need to understand the purpose and value of a project.
-        </p>
-        <p>
-          This portfolio also shows how my artifacts fit together as one complete body of work. I used the same Android inventory application and enhanced it in three different categories: software design and engineering, algorithms and data structures, and databases. Together, these enhancements show my ability to analyze an existing project, improve it in meaningful ways, and explain how each improvement supports broader computer science outcomes.
-        </p>
-        <p>
-          Overall, this ePortfolio represents my progress throughout the Computer Science program and shows that I am prepared to enter the field with a stronger foundation in programming, problem solving, mobile development, data handling, and software improvement.
-        </p>
-
-        <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Professional%20Self.docx" target="_blank">
-          View Self-Assessment
-        </a>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="hero-grid">
-        <div class="card">
-          <h2 class="section-title">About This Portfolio</h2>
-          <p>
-            This portfolio was created for CS 499 to show my growth throughout the Computer Science program.
-            It includes my professional self-assessment, code review, category artifacts, enhancement narratives,
-            and supporting project files.
-          </p>
-          <p>
-            My featured artifact is an Android inventory management app that I enhanced in three areas:
-            software design and engineering, algorithms and data structures, and databases.
-          </p>
-          <div class="button-row">
-            <a class="btn" href="#artifacts">View Artifacts</a>
-            <a class="btn secondary" href="#narratives">View Narratives</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Portfolio Overview</h3>
-          <p>
-            This site includes my code review video, artifact enhancements, written narratives,
-            and portfolio reflections from the CS 499 capstone course.
-          </p>
-          <p>
-            My portfolio is centered on mobile app development and shows how one Android project can be enhanced
-            to demonstrate software design, algorithmic thinking, and database improvement.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section id="code-review">
-      <div class="card">
-        <h2 class="section-title">Code Review</h2>
-        <div class="button-row">
-          <a class="btn" href="https://youtu.be/DmFTupVVlIA" target="_blank">Watch Code Review</a>
-          <a class="btn" href="https://github.com/britttoni/britttoni.github.io/blob/main/CS360_project1.zip" target="_blank">Original Code File</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="artifacts">
-      <h2 class="section-title">Artifact Enhancements</h2>
-      <div class="artifact-grid">
-
-        <div class="card artifact-card">
-          <span class="badge">Category 1</span>
-          <h3>Software Design and Engineering</h3>
-          <p>
-            This enhancement focused on improving the structure, readability, and validation of the inventory app.
-            I organized the code more clearly, added input validation, and improved how the app handles add and update actions.
-          </p>
-          <ul class="clean">
-            <li>Improved input validation</li>
-            <li>Cleaner add/update logic</li>
-            <li>Better method organization</li>
-            <li>More readable code structure</li>
-          </ul>
-
-          <div class="image-gallery">
-            <div class="image-card">
-              <img src="software1.png" alt="Software design screenshot 1" class="clickable">
-              <p>Refactored MainActivity into smaller helper methods.</p>
-            </div>
-
-            <div class="image-card">
-              <img src="software2.png" alt="Software design screenshot 2" class="clickable">
-              <p>Added ValidationUtils for safer user input.</p>
-            </div>
-
-            <div class="image-card">
-              <img src="software3.png" alt="Software design screenshot 3" class="clickable">
-              <p>Replaced hardcoded phone numbers with AppPreferences.</p>
-            </div>
-          </div>
-
-          <div class="file-section">
-            <p class="muted">View the original file, updated file, or download the full project zip.</p>
-
-            <div class="file-groups">
-              <div class="file-box">
-                <h4>Original Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-                </ul>
-              </div>
-
-              <div class="file-box">
-                <h4>Updated Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(1).java" target="_blank">MainActivity.java</a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="zip-box">
-              <h4>Category 1 Full Code</h4>
-              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Artifacts.zip" target="_blank">Zip File</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card artifact-card">
-          <span class="badge">Category 2</span>
-          <h3>Algorithms and Data Structures</h3>
-          <p>
-            This enhancement focused on improving how inventory data is stored and managed in the app.
-            I used an ArrayList to hold inventory items, loaded records from the database into objects,
-            and added update tracking to manage item changes more clearly.
-          </p>
-          <ul class="clean">
-            <li>ArrayList used to manage inventory items</li>
-            <li>Inventory data loaded into objects</li>
-            <li>Update tracking with item ID</li>
-            <li>Cleaner data handling in the app</li>
-          </ul>
-
-          <div class="image-gallery">
-            <div class="image-card">
-              <img src="algorithms1.png" alt="Algorithms screenshot 1" class="clickable">
-              <p>Used an ArrayList to manage inventory records.</p>
-            </div>
-
-            <div class="image-card">
-              <img src="algorithms2.png" alt="Algorithms screenshot 2" class="clickable">
-              <p>Added search, filtering, and sorting features.</p>
-            </div>
-
-            <div class="image-card">
-              <img src="algorithms3.png" alt="Algorithms screenshot 3" class="clickable">
-              <p>Used HashMap and binary search to improve lookup speed.</p>
-            </div>
-          </div>
-
-          <div class="file-section">
-            <p class="muted">View the original files, updated files, or download the full project zip.</p>
-
-            <div class="file-groups">
-              <div class="file-box">
-                <h4>Original Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils.java" target="_blank">InventoryUtils.java</a></li>
-                </ul>
-              </div>
-
-              <div class="file-box">
-                <h4>Updated Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(2).java" target="_blank">MainActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(2).java" target="_blank">InventoryAdapter.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryUtils(2).java" target="_blank">InventoryUtils.java</a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="zip-box">
-              <h4>Category 2 Full Code</h4>
-              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Artifacts.zip" target="_blank">Zip File</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card artifact-card">
-          <span class="badge">Category 3</span>
-          <h3>Databases</h3>
-          <p>
-            This enhancement focused on improving the SQLite database by strengthening the table structure,
-            validating inserted data, and adding better security for user information.
-          </p>
-          <ul class="clean">
-            <li>Improved database table structure</li>
-            <li>Validation before inserting data</li>
-            <li>Password hashing for security</li>
-            <li>Better overall database functionality</li>
-          </ul>
-
-          <div class="image-gallery">
-            <div class="image-card">
-              <img src="database1.png" alt="Database screenshot 1" class="clickable">
-              <p>Created database tables for users and inventory.</p>
-            </div>
-            <div class="image-card">
-              <img src="database2.png" alt="Database screenshot 2" class="clickable">
-              <p>Added full CRUD support for inventory items.</p>
-            </div>
-            <div class="image-card">
-              <img src="database3.png" alt="Database screenshot 3" class="clickable">
-              <p>Added password hashing to protect user data.</p>
-            </div>
-          </div>
-
-          <div class="file-section">
-            <p class="muted">View the original files, updated files, or download the full project zip.</p>
-
-            <div class="file-groups">
-              <div class="file-box">
-                <h4>Original Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper.java" target="_blank">DBHelper.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity.java" target="_blank">MainActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity.java" target="_blank">LoginActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter.java" target="_blank">InventoryAdapter.java</a></li>
-                </ul>
-              </div>
-
-              <div class="file-box">
-                <h4>Updated Code Files</h4>
-                <ul>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/DBHelper(3).java" target="_blank">DBHelper.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/MainActivity(3).java" target="_blank">MainActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/LoginActivity(3).java" target="_blank">LoginActivity.java</a></li>
-                  <li><a href="https://github.com/britttoni/britttoni.github.io/raw/main/InventoryAdapter(3).java" target="_blank">InventoryAdapter.java</a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="zip-box">
-              <h4>Category 3 Full Code</h4>
-              <a href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Artifacts.zip" target="_blank">Zip File</a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="narratives">
-      <div class="grid">
-
-        <div class="card">
-          <h3>Enhancement Narratives</h3>
-          <p class="muted">
-            These narratives explain how I improved each category artifact and what I learned from the process.
-          </p>
-
-          <div class="grid" style="margin-top: 15px;">
-
-            <div class="card">
-              <span class="badge">Category 1</span>
-              <h4>Software Design and Engineering</h4>
-              <p class="muted">Focus: Code structure, validation, and readability</p>
-
-              <h5>1. Artifact Description</h5>
-              <p>
-                The artifact I chose for this milestone is my Android inventory app that I created earlier in CS 360. The app lets users create an account, login, and manage inventory items while storing data using SQLite and sending SMS notifications.
-              </p>
-
-              <h5>2. Why I Chose This Artifact</h5>
-              <p>
-                I chose this project because it shows multiple skills working together, including user interaction, database use, and app design. I improved the structure by breaking large sections of code into smaller methods and improving organization.
-              </p>
-
-              <h5>3. Course Outcomes</h5>
-              <p>
-                These improvements align with my original plan by showing better software design practices, cleaner code, and improved validation.
-              </p>
-
-              <h5>4. Reflection</h5>
-              <p>
-                I learned that working code is not always well-designed code. One challenge was refactoring without breaking functionality and improving validation in a user-friendly way.
-              </p>
-
-              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%201%20Narrative.docx" target="_blank">
-                Download Full Narrative
-              </a>
-            </div>
-
-            <div class="card">
-              <span class="badge">Category 2</span>
-              <h4>Algorithms and Data Structures</h4>
-              <p class="muted">Focus: Data handling, searching, and sorting</p>
-
-              <h5>1. Artifact Description</h5>
-              <p>
-                This artifact is my Android inventory app that allows users to manage inventory using SQLite and display data through a RecyclerView.
-              </p>
-
-              <h5>2. Enhancements</h5>
-              <p>
-                I improved how data is handled by adding sorting, filtering, and search functionality. I also used ArrayList and HashMap to better organize data and implemented binary search for faster lookup.
-              </p>
-
-              <h5>3. Course Outcomes</h5>
-              <p>
-                These improvements demonstrate my understanding of data structures and algorithms and how they improve performance and efficiency.
-              </p>
-
-              <h5>4. Reflection</h5>
-              <p>
-                I learned how important it is to choose the right data structure. One challenge was making sure the RecyclerView updated correctly after adding new logic.
-              </p>
-
-              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%202%20Narrative.docx" target="_blank">
-                Download Full Narrative
-              </a>
-            </div>
-
-            <div class="card">
-              <span class="badge">Category 3</span>
-              <h4>Databases</h4>
-              <p class="muted">Focus: Database design, CRUD, and security</p>
-
-              <h5>1. Artifact Description</h5>
-              <p>
-                This artifact is my Android inventory app that uses SQLite to store user and inventory data.
-              </p>
-
-              <h5>2. Enhancements</h5>
-              <p>
-                I improved the database by adding password hashing, full CRUD functionality, and better validation to prevent bad data.
-              </p>
-
-              <h5>3. Course Outcomes</h5>
-              <p>
-                These changes show my ability to manage databases, improve security, and enhance application functionality.
-              </p>
-
-              <h5>4. Reflection</h5>
-              <p>
-                I learned the importance of database security and data validation. One challenge was making sure updates didn’t break existing features.
-              </p>
-
-              <a class="small-link" href="https://github.com/britttoni/britttoni.github.io/raw/main/Category%203%20Narrative.docx" target="_blank">
-                Download Full Narrative
-              </a>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="card">
-        <span class="badge">Contact</span>
-        <h2 class="section-title">Contact Information</h2>
-        <p><strong>Name:</strong> Toni Britt</p>
-        <p><strong>Email:</strong> toni.britt@snhu.edu</p>
-        <p><strong>GitHub:</strong> <a class="small-link" href="https://github.com/britttoni" target="_blank">GitHub Profile</a></p>
-        <p><strong>LinkedIn:</strong> <a class="small-link" href="https://www.linkedin.com/in/toni-britt/" target="_blank">LinkedIn Profile</a></p>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <p>CS 499 ePortfolio | Toni Britt</p>
-  </footer>
-
-  <div id="imageModal" class="modal">
-    <span class="close">&times;</span>
-    <img class="modal-content" id="modalImage" alt="Expanded screenshot">
-  </div>
-
-  <script>
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImage");
-    const closeBtn = document.querySelector(".close");
-
-    document.querySelectorAll(".clickable").forEach(img => {
-      img.addEventListener("click", function () {
-        modal.style.display = "block";
-        modalImg.src = this.src;
-      });
-    });
-
-    closeBtn.onclick = function () {
-      modal.style.display = "none";
-    };
-
-    modal.onclick = function (e) {
-      if (e.target !== modalImg) {
-        modal.style.display = "none";
-      }
-    };
-  </script>
-</body>
-</html>
+}
