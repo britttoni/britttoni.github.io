@@ -199,25 +199,31 @@
 
     .image-gallery {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
       margin-top: 14px;
+      align-items: start;
     }
 
     .image-card {
       background: #f9fafb;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px;
-      text-align: center;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: left;
+      height: 100%;
+      overflow: hidden;
     }
 
     .image-card img {
       width: 100%;
-      max-width: 250px;
-      height: 150px;
+      max-width: 220px;
+      height: 120px;
       object-fit: contain;
-      margin: 0 auto;
+      margin: 0 auto 10px;
       display: block;
       border-radius: 8px;
       border: 1px solid var(--border);
@@ -228,13 +234,16 @@
     }
 
     .image-card img:hover {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
 
     .image-card p {
-      font-size: 0.85rem;
-      margin-top: 6px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      margin: 0;
       color: var(--muted);
+      width: 100%;
+      word-break: break-word;
     }
 
     .file-section {
@@ -358,6 +367,7 @@
       }
 
       .image-card img {
+        max-width: 100%;
         height: auto;
       }
 
@@ -467,23 +477,17 @@
           <div class="image-gallery">
             <div class="image-card">
               <img src="software1.png" alt="Software design screenshot 1" class="clickable">
-              <p>
-                MainActivity was refactored by breaking large sections of code into smaller helper methods such as initializeViews(), setupRecyclerView(), and setupClickListeners(), improving organization and readability.
-              </p>
+              <p>Refactored MainActivity into smaller helper methods.</p>
             </div>
 
             <div class="image-card">
               <img src="software2.png" alt="Software design screenshot 2" class="clickable">
-              <p>
-                Input validation was improved using ValidationUtils to check for empty item names and invalid quantities, preventing crashes and ensuring correct user input.
-              </p>
+              <p>Added ValidationUtils for safer user input.</p>
             </div>
 
             <div class="image-card">
               <img src="software3.png" alt="Software design screenshot 3" class="clickable">
-              <p>
-                Hardcoded phone numbers were removed and replaced with AppPreferences, allowing the app to use stored user data and making it more flexible and realistic.
-              </p>
+              <p>Replaced hardcoded phone numbers with AppPreferences.</p>
             </div>
           </div>
 
@@ -531,23 +535,17 @@
           <div class="image-gallery">
             <div class="image-card">
               <img src="algorithms1.png" alt="Algorithms screenshot 1" class="clickable">
-              <p>
-                Inventory items were stored and managed using an ArrayList, which provided a stronger data structure for organizing and displaying records in the app.
-              </p>
+              <p>Used an ArrayList to manage inventory records.</p>
             </div>
 
             <div class="image-card">
               <img src="algorithms2.png" alt="Algorithms screenshot 2" class="clickable">
-              <p>
-                Search, filtering, and sorting features were added to improve how inventory data is processed and displayed, making the app more efficient and user friendly.
-              </p>
+              <p>Added search, filtering, and sorting features.</p>
             </div>
 
             <div class="image-card">
               <img src="algorithms3.png" alt="Algorithms screenshot 3" class="clickable">
-              <p>
-                More advanced data structures and algorithms, including a HashMap for faster lookup and binary search for item searching, were added to improve performance.
-              </p>
+              <p>Used HashMap and binary search to improve lookup speed.</p>
             </div>
           </div>
 
@@ -596,15 +594,15 @@
           <div class="image-gallery">
             <div class="image-card">
               <img src="database1.png" alt="Database screenshot 1" class="clickable">
-              <p>Database tables were created to store user and inventory information.</p>
+              <p>Created database tables for users and inventory.</p>
             </div>
             <div class="image-card">
               <img src="database2.png" alt="Database screenshot 2" class="clickable">
-              <p>Now code supports full CRUD functionality.</p>
+              <p>Added full CRUD support for inventory items.</p>
             </div>
             <div class="image-card">
               <img src="database3.png" alt="Database screenshot 3" class="clickable">
-              <p>Implementation of password hashing to improve security and protect user information.</p>
+              <p>Added password hashing to protect user data.</p>
             </div>
           </div>
 
