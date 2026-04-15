@@ -4,7 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,22 +17,37 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-
-// allows users to add, update, delete, and view items stored in db
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
 
-    // request code for SMS permission
     private static final int SMS_PERMISSION_CODE = 100;
+    private static final String ITEM_ADDED_MESSAGE = "Alert: New item added to inventory!";
 
-    RecyclerView recyclerView;
-    DBHelper dbHelper;
-    InventoryAdapter adapter;
-    ArrayList<InventoryItem> inventoryList;
-    EditText editTextItemName, editTextItemQuantity;
-    Button buttonAddItem;
+    private RecyclerView recyclerView;
+    private DBHelper dbHelper;
+    private InventoryAdapter adapter;
 
+    // Full inventory list from database
+    private ArrayList<InventoryItem> inventoryList;
 
+    // What is currently shown on screen
+    private ArrayList<InventoryItem> displayedList;
+
+    // Faster lookup by item ID
+    private HashMap<Integer, InventoryItem> inventoryMap;
+
+    private EditText editTextItemName;
+    private EditText editTextItemQuantity;
+    private EditText editTextSearch;
+
+    private Button buttonAddItem;
+    private Button buttonSort;
+
+    // Toggle so the sort button can switch between name and quantity
+    private boolean sortByQuantity = false;
+
+    // Tracks update mode for full CRUD
     private boolean isUpdating = false;
     private int updatingItemId = -1;
 
@@ -40,131 +56,221 @@ public class MainActivity extends AppCompatActivity implements InventoryAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeViews();
+        setupRecyclerView();
+        loadInventoryData();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
         recyclerView = findViewById(R.id.recyclerViewInventory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         editTextItemName = findViewById(R.id.editTextItemName);
         editTextItemQuantity = findViewById(R.id.editTextItemQuantity);
+        editTextSearch = findViewById(R.id.editTextSearch);
         buttonAddItem = findViewById(R.id.buttonAddItem);
+        buttonSort = findViewById(R.id.buttonSort);
 
         dbHelper = new DBHelper(this);
         inventoryList = new ArrayList<>();
-        loadInventoryData();
+        displayedList = new ArrayList<>();
+        inventoryMap = new HashMap<>();
+    }
 
-        adapter = new InventoryAdapter(inventoryList, this);
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new InventoryAdapter(displayedList, this);
         recyclerView.setAdapter(adapter);
+    }
 
-        // add or update item
+    private void setupClickListeners() {
         buttonAddItem.setOnClickListener(v -> {
             if (isUpdating) {
-                updateItem();
+                handleUpdateItem();
             } else {
-                addItem();
+                handleAddItem();
             }
         });
+
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterInventory(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+
+        buttonSort.setOnClickListener(v -> toggleSort());
     }
 
-    // add item
-    private void addItem() {
-        String name = editTextItemName.getText().toString().trim();
-        String quantityStr = editTextItemQuantity.getText().toString().trim();
+    private void handleAddItem() {
+        String itemName = ValidationUtils.normalizeItemName(
+                editTextItemName.getText().toString()
+        );
 
-        if (name.isEmpty() || quantityStr.isEmpty()) {
-            Toast.makeText(this, "Enter item name and quantity", Toast.LENGTH_SHORT).show();
+        String quantityText = editTextItemQuantity.getText().toString().trim();
+        Integer quantity = ValidationUtils.parsePositiveQuantity(quantityText);
+
+        if (ValidationUtils.isBlank(itemName)) {
+            showToast("Enter an item name.");
             return;
         }
 
-        int quantity;
-        try {
-            quantity = Integer.parseInt(quantityStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Quantity must be a number", Toast.LENGTH_SHORT).show();
+        if (quantity == null) {
+            showToast("Enter a valid quantity greater than 0.");
             return;
         }
 
-        if (quantity < 0) {
-            Toast.makeText(this, "Quantity cannot be negative", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (dbHelper.addItem(name, quantity)) {
-            Toast.makeText(this, "Item added", Toast.LENGTH_SHORT).show();
+        if (dbHelper.addItem(itemName, quantity)) {
+            showToast("Item added.");
+            clearItemInputs();
             reloadInventoryData();
-            requestSmsPermission();
-            clearFields();
+            requestSmsPermissionIfNeeded();
         } else {
-            Toast.makeText(this, "Failed to add item", Toast.LENGTH_SHORT).show();
+            showToast("Failed to add item.");
         }
     }
 
-    // update item
-    private void updateItem() {
-        String name = editTextItemName.getText().toString().trim();
-        String quantityStr = editTextItemQuantity.getText().toString().trim();
+    private void handleUpdateItem() {
+        String itemName = ValidationUtils.normalizeItemName(
+                editTextItemName.getText().toString()
+        );
 
-        if (name.isEmpty() || quantityStr.isEmpty()) {
-            Toast.makeText(this, "Enter item name and quantity", Toast.LENGTH_SHORT).show();
+        String quantityText = editTextItemQuantity.getText().toString().trim();
+        Integer quantity = ValidationUtils.parsePositiveQuantity(quantityText);
+
+        if (ValidationUtils.isBlank(itemName)) {
+            showToast("Enter an item name.");
             return;
         }
 
-        int quantity;
-        try {
-            quantity = Integer.parseInt(quantityStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show();
+        if (quantity == null) {
+            showToast("Enter a valid quantity greater than 0.");
             return;
         }
 
-        if (dbHelper.updateItem(updatingItemId, name, quantity)) {
-            Toast.makeText(this, "Item updated", Toast.LENGTH_SHORT).show();
+        if (dbHelper.updateItem(updatingItemId, itemName, quantity)) {
+            showToast("Item updated.");
             resetUpdateMode();
             reloadInventoryData();
         } else {
-            Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+            showToast("Update failed.");
         }
+    }
+
+    private void clearItemInputs() {
+        editTextItemName.setText("");
+        editTextItemQuantity.setText("");
+    }
+
+    private void resetUpdateMode() {
+        isUpdating = false;
+        updatingItemId = -1;
+        buttonAddItem.setText("Add Item");
+        clearItemInputs();
     }
 
     private void loadInventoryData() {
         inventoryList.clear();
+
         Cursor cursor = dbHelper.getAllItems();
 
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_ID));
-                        String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_NAME));
-                        int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_QUANTITY));
-                        inventoryList.add(new InventoryItem(id, name, quantity));
-                    } while (cursor.moveToNext());
-                }
-            } finally {
-                cursor.close();
-            }
+        if (cursor == null) {
+            return;
         }
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_ID));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_NAME));
+                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COLUMN_ITEM_QUANTITY));
+
+                    inventoryList.add(new InventoryItem(id, name, quantity));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        // Build map for faster lookup
+        inventoryMap = InventoryUtils.buildItemMap(inventoryList);
+
+        // Default sort by name when data loads
+        InventoryUtils.sortByName(inventoryList);
+
+        displayedList.clear();
+        displayedList.addAll(inventoryList);
     }
 
     private void reloadInventoryData() {
         loadInventoryData();
-        adapter.notifyDataSetChanged();
+
+        String currentSearch = editTextSearch.getText().toString().trim();
+        if (!currentSearch.isEmpty()) {
+            filterInventory(currentSearch);
+        } else {
+            adapter.updateData(displayedList);
+        }
     }
 
-    //delete item from db
+    private void filterInventory(String query) {
+        ArrayList<InventoryItem> filteredList = InventoryUtils.filterByName(inventoryList, query);
+
+        // Keep current sort mode after filtering
+        if (sortByQuantity) {
+            InventoryUtils.sortByQuantityDescending(filteredList);
+        } else {
+            InventoryUtils.sortByName(filteredList);
+        }
+
+        displayedList.clear();
+        displayedList.addAll(filteredList);
+        adapter.updateData(displayedList);
+    }
+
+    private void toggleSort() {
+        sortByQuantity = !sortByQuantity;
+
+        if (sortByQuantity) {
+            InventoryUtils.sortByQuantityDescending(displayedList);
+            buttonSort.setText("Sort by Name");
+        } else {
+            InventoryUtils.sortByName(displayedList);
+            buttonSort.setText("Sort by Quantity");
+        }
+
+        adapter.updateData(displayedList);
+    }
+
     @Override
     public void onDeleteClick(int id) {
-        if (dbHelper.deleteItem(id)) {
-            Toast.makeText(this, "Item deleted", Toast.LENGTH_SHORT).show();
+        InventoryItem item = inventoryMap.get(id);
 
-            // reset if deleting the item being edited
+        if (dbHelper.deleteItem(id)) {
+            showToast("Item deleted.");
+
+            if (item != null) {
+                inventoryMap.remove(id);
+            }
+
             if (isUpdating && updatingItemId == id) {
                 resetUpdateMode();
             }
 
             reloadInventoryData();
         } else {
-            Toast.makeText(this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+            showToast("Failed to delete item.");
         }
     }
-
 
     @Override
     public void onUpdateClick(InventoryItem item) {
@@ -175,24 +281,22 @@ public class MainActivity extends AppCompatActivity implements InventoryAdapter.
         editTextItemQuantity.setText(String.valueOf(item.getQuantity()));
         buttonAddItem.setText("Update Item");
 
-        Toast.makeText(this, "Edit item then press Update", Toast.LENGTH_SHORT).show();
+        showToast("Edit item then press Update.");
     }
 
-    private void resetUpdateMode() {
-        isUpdating = false;
-        updatingItemId = -1;
-        buttonAddItem.setText("Add Item");
-        clearFields();
-    }
+    private void requestSmsPermissionIfNeeded() {
+        if (!AppPreferences.hasNotificationPhoneNumber(this)) {
+            showToast("No SMS phone number saved, so notification was skipped.");
+            return;
+        }
 
-    private void clearFields() {
-        editTextItemName.setText("");
-        editTextItemQuantity.setText("");
-    }
-
-    private void requestSmsPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    SMS_PERMISSION_CODE
+            );
         } else {
             sendSmsNotification();
         }
@@ -201,19 +305,26 @@ public class MainActivity extends AppCompatActivity implements InventoryAdapter.
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == SMS_PERMISSION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            sendSmsNotification();
-        } else {
-            Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
+
+        if (requestCode == SMS_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendSmsNotification();
+            } else {
+                showToast("SMS permission denied.");
+            }
         }
     }
 
-    //send SMS when item is added
     private void sendSmsNotification() {
-        String phoneNumber = "5551234567";
-        String message = "Alert: New item added to inventory!";
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-        Toast.makeText(this, "SMS sent!", Toast.LENGTH_SHORT).show();
+        String phoneNumber = AppPreferences.getNotificationPhoneNumber(this);
+        boolean smsSent = SmsUtils.sendSms(this, phoneNumber, ITEM_ADDED_MESSAGE);
+
+        if (smsSent) {
+            showToast("SMS sent.");
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
